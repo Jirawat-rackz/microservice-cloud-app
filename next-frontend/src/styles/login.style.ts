@@ -1,3 +1,4 @@
+import { Button } from 'antd';
 import styled from 'styled-components';
 
 export const Container = styled.div`
@@ -9,3 +10,13 @@ export const Container = styled.div`
   align-items: center;
   flex-direction: column;
 `;
+
+export const SubmitButton = styled(Button)`
+  width: 100%;
+  margin-top: 8px;
+`;
+
+SubmitButton.defaultProps = {
+  type: 'primary',
+  size: 'large',
+};

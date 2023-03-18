@@ -1,14 +1,18 @@
 import { ConfigProvider, App } from 'antd';
-import thTH from 'antd/locale/th_TH';
+import enUS from 'antd/locale/en_US';
+import { AuthProvider } from './auth.provider';
+import LayoutProvider from './layout.provider';
 
-type ProviderProps = {
+export type ProviderProps = {
   children: React.ReactNode;
 };
 
 const Providers: React.FC<ProviderProps> = ({ children }) => {
   return (
-    <ConfigProvider locale={thTH}>
-      <App>{children}</App>
+    <ConfigProvider locale={enUS}>
+      <AuthProvider>
+        <App>{children}</App>
+      </AuthProvider>
     </ConfigProvider>
   );
 };
