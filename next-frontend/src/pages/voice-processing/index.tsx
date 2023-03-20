@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../styles/audio-recorder.module.css';
 import AudioRecorder from '@/components/audio-recorder';
-import { Button, message, Upload } from 'antd';
+import { Button, message, notification, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import {
@@ -12,6 +12,8 @@ import {
   Header1,
 } from '@/styles/voiceprocessing.style';
 import LayoutProvider from '@/providers/layout.provider';
+import axios from 'axios';
+import { pb } from '../_app';
 
 const VoiceProcessingPage: React.FC = () => {
   return (
@@ -28,32 +30,47 @@ const VoiceProcessingPage: React.FC = () => {
   );
 };
 
-const props: UploadProps = {
-  name: 'file',
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-  accept: '.wav',
-  headers: {
-    authorization: 'authorization-text',
-  },
-  onChange(info) {
-    if (info.file.status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
+const UploadFileAudio: React.FC = () => {
+  const [api, contextHolder] = notification.useNotification();
 
-const UploadFileAudio: React.FC = () => (
-  <Container3>
-    <h2>Upload File</h2>
-    <Upload {...props}>
-      <Button icon={<UploadOutlined />}>Click to Upload</Button>
-    </Upload>
-  </Container3>
-);
+  const blobToBase64 = (blob: Blob) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = function () {
+        resolve(reader.result);
+      };
+    });
+  };
+
+  const handleUpload = async (file: Blob) => {
+    const b64 = await blobToBase64(file);
+
+    try {
+      await axios.post(`/speech-upload`, {
+        user_id: pb.authStore.model?.id,
+        data: b64,
+      });
+      api.success({
+        message: 'Upload Success',
+      });
+    } catch (error: any) {
+      api.error({
+        message: 'Upload Failed',
+        description: error?.message,
+      });
+    }
+  };
+
+  return (
+    <Container3>
+      {contextHolder}
+      <h2>Upload File</h2>
+      <Upload beforeUpload={handleUpload}>
+        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+      </Upload>
+    </Container3>
+  );
+};
 
 export default VoiceProcessingPage;

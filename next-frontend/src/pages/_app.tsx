@@ -6,8 +6,11 @@ import Providers from '@/providers';
 import '@/styles/globals.css';
 import connectPocketBase from '@/helpers/connect-pocketbase.helper';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 export const pb = connectPocketBase();
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();

@@ -22,6 +22,9 @@ export const AuthProvider: React.FC<ProviderProps> = (props) => {
     async (username: string, password: string) => {
       try {
         await pb.collection('users').authWithPassword(username, password);
+        api.success({
+          message: 'Login Success',
+        });
         router.push('/dashboard');
       } catch (error: any) {
         api.error({
@@ -30,13 +33,13 @@ export const AuthProvider: React.FC<ProviderProps> = (props) => {
         });
       }
     },
-    []
+    [api, router]
   );
 
   const logout = React.useCallback(() => {
     pb.authStore.clear();
     router.push('/login');
-  }, []);
+  }, [router]);
 
   return (
     <AuthContext.Provider value={{ login, logout }}>

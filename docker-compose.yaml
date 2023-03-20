@@ -1,21 +1,57 @@
 version: "3"
 
 services:
-  stt-py:
-    build: ./speech-to-text-service/Dockerfile
-    volumes:
-      - speech-to-text-service:/STT
-    environment:
-      - STT_SCORER_PATH=
-      - STT_MODEL_PATH=
-      - MQTT_URL=emqx
-      - MQTT_PORT=1883
-      - MQTT_TOPIC_SUB=
-      - MQTT_TOPIC_PUB=
-    entrypoint: [ "bin/sh", "start.sh" ]
+  # stt-py:
+  #   build: ./speech-to-text-service/Dockerfile
+  #   volumes:
+  #     - speech-to-text-service:/STT
+  #   environment:
+  #     - STT_SCORER_PATH=
+  #     - STT_MODEL_PATH=
+  #     - MQTT_URL=emqx
+  #     - MQTT_PORT=1883
+  #     - MQTT_TOPIC_SUB=
+  #     - MQTT_TOPIC_PUB=
+  #   entrypoint: [ "bin/sh", "start.sh" ]
 
   emqx:
     image: emqx:5
     ports:
       - 1883:1883
       - 18083:18083
+
+  pocketbase:
+    build:
+      context: ./pocketbase
+      dockerfile: Dockerfile
+      args:
+        - VERSION=0.13.4
+    ports:
+      - 8090:8090
+
+  speech-publisher:
+    build:
+      context: ./go-speech-publisher
+      dockerfile: Dockerfile
+      args:
+        - APP_NAME=speech-publisher
+        - APP_PORT=8080
+    ports:
+      - 8080:8080
+
+  speech-comsumer:
+    build:
+      context: ./go-speech-publisher
+      dockerfile: Dockerfile
+      args:
+        - APP_NAME=speech-consumer
+        - APP_PORT=8081
+    ports:
+      - 8081:8081
+
+  frontend:
+    build:
+      context: ./next-frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000

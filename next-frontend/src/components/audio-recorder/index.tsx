@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { PoweroffOutlined } from '@ant-design/icons';
-import { Button, Space } from 'antd';
+import { Button, notification, Space } from 'antd';
 import { Container3 } from '@/styles/login.style';
-import { AudioOutlined, PauseCircleFilled, PlayCircleFilled } from '@ant-design/icons';
+import {
+  AudioOutlined,
+  PauseCircleFilled,
+  PlayCircleFilled,
+} from '@ant-design/icons';
+import axios from 'axios';
+import { pb } from '@/pages/_app';
 
 const AudioRecorder = () => {
   const [permission, setPermission] = React.useState<boolean>(false);
@@ -13,6 +19,8 @@ const AudioRecorder = () => {
   const [audioChunks, setAudioChunks] = React.useState<any[]>([]);
   const [audio, setAudio] = React.useState<string | null>(null);
   const mimeType = 'audio/webm';
+
+  const [api, contextHolder] = notification.useNotification();
 
   const getMicrophonePermission = async () => {
     if ('MediaRecorder' in window) {
@@ -51,59 +59,88 @@ const AudioRecorder = () => {
     setAudioChunks(localAudioChunks);
   };
 
-  const stopRecording = () => {
+  const blobToBase64 = (blob: Blob) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = function () {
+        resolve(reader.result);
+      };
+    });
+  };
+
+  const stopRecording = async () => {
     setRecordingStatus('inactive');
     //stops the recording instance
     // mediaRecorder.stop();
     mediaRecorder.current.stop();
-    mediaRecorder.current.onstop = () => {
+    mediaRecorder.current.onstop = async () => {
       //creates a blob file from the audiochunks data
       const audioBlob = new Blob(audioChunks, { type: mimeType });
       //creates a playable URL from the blob file.
       const audioUrl = URL.createObjectURL(audioBlob);
       setAudio(audioUrl);
+
+      let b64 = await blobToBase64(audioBlob);
+
+      try {
+        await axios.post(`/speech-upload`, {
+          user_id: pb.authStore.model?.id,
+          data: b64,
+        });
+        api.success({
+          message: 'Upload Success',
+        });
+      } catch (error: any) {
+        api.error({
+          message: 'Upload Failed',
+          description: error?.message,
+        });
+      }
+
       setAudioChunks([]);
     };
   };
 
   return (
     <Container3>
+      {contextHolder}
       <h2>Audio Recorder</h2>
-  
-        <div className="audio-controls">
-          {!permission ? (
-            <Button
-              type="primary"
-              icon={<AudioOutlined />}
-              onClick={() => getMicrophonePermission()}
-            >
-              Get Microphone
-            </Button>
-          ) : null}
-          {permission && recordingStatus === 'inactive' ? (
-             <Button
-             type="primary"
-             icon={<PlayCircleFilled />}
-             onClick={() => startRecording()}
-           >
+
+      <div className="audio-controls">
+        {!permission ? (
+          <Button
+            type="primary"
+            icon={<AudioOutlined />}
+            onClick={() => getMicrophonePermission()}
+          >
+            Get Microphone
+          </Button>
+        ) : null}
+        {permission && recordingStatus === 'inactive' ? (
+          <Button
+            type="primary"
+            icon={<PlayCircleFilled />}
+            onClick={() => startRecording()}
+          >
             StartRecording
-           </Button>
-          ) : null}
-          {recordingStatus === 'recording' ? (
-            <Button
+          </Button>
+        ) : null}
+        {recordingStatus === 'recording' ? (
+          <Button
             type="primary"
             icon={<PauseCircleFilled />}
             onClick={() => stopRecording()}
           >
             StopRecording
           </Button>
-          ) : null}
-        </div>
-        {audio ? (
-          <div className="audio-container">
-            {/* <audio src={audio} controls></audio> */}
-          </div>
         ) : null}
+      </div>
+      {audio ? (
+        <div className="audio-container">
+          {/* <audio src={audio} controls></audio> */}
+        </div>
+      ) : null}
     </Container3>
   );
 };

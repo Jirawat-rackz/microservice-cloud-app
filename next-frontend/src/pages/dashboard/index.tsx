@@ -1,7 +1,24 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { Table } from 'antd';
-import columns from './columns';
 import LayoutProvider from '@/providers/layout.provider';
+
+const columns = [
+  {
+    title: 'userId',
+    dataIndex: 'userId',
+    key: 'userId',
+  },
+  {
+    title: 'word',
+    dataIndex: 'word',
+    key: 'word',
+  },
+  {
+    title: 'created_at',
+    dataIndex: 'created_at',
+    key: 'created_at',
+  },
+];
 
 function DashboardPage() {
   const [dataSource, setDataSource] = React.useState<any[]>([]);

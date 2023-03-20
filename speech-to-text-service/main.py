@@ -13,7 +13,6 @@ from paho.mqtt import client as mqtt_client
 
 if __name__ == '__main__':
 
-    
     # STT ENV
     SCORER_PATH = os.environ.get('STT_SCORER_PATH')
     MODEL_PATH = os.environ.get('STT_MODEL_PATH')

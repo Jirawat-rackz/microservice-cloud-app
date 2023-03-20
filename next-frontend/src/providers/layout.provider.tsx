@@ -26,7 +26,7 @@ const LayoutProvider: React.FC<ProviderProps> = ({ children }) => {
         onClick: () => router.push(`${route?.key}`),
       };
     }) as ItemType[];
-  }, []);
+  }, [router]);
 
   return (
     <React.Fragment>

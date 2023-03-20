@@ -14,9 +14,12 @@ const LoginPage = () => {
   const [form] = Form.useForm<IFormLoginProps>();
   const { login } = useAuth();
 
-  const onFinish = React.useCallback(async (values: IFormLoginProps) => {
-    login(values.username, values.password);
-  }, []);
+  const onFinish = React.useCallback(
+    async (values: IFormLoginProps) => {
+      login(values.username, values.password);
+    },
+    [login]
+  );
 
   return (
     <Container>
