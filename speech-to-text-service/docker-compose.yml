@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  stt-py:
+    image: coqui-stt-py
+    volumes:
+      - .:/STT
+    environment:
+      - STT_SCORER_PATH=
+      - STT_MODEL_PATH=
+      - MQTT_URL=
+      - MQTT_PORT=
+      - MQTT_TOPIC_SUB=
+      - MQTT_TOPIC_PUB=
+    entrypoint: [ "bin/sh", "start.sh" ]
