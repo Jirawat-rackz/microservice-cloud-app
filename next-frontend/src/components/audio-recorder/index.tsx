@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { PoweroffOutlined } from '@ant-design/icons';
+import { Button, Space } from 'antd';
+import { Container3 } from '@/styles/login.style';
+import { AudioOutlined, PauseCircleFilled, PlayCircleFilled } from '@ant-design/icons';
 
 const AudioRecorder = () => {
   const [permission, setPermission] = React.useState<boolean>(false);
@@ -63,36 +67,44 @@ const AudioRecorder = () => {
   };
 
   return (
-    <div>
+    <Container3>
       <h2>Audio Recorder</h2>
-      <main>
+  
         <div className="audio-controls">
           {!permission ? (
-            <button onClick={getMicrophonePermission} type="button">
+            <Button
+              type="primary"
+              icon={<AudioOutlined />}
+              onClick={() => getMicrophonePermission()}
+            >
               Get Microphone
-            </button>
+            </Button>
           ) : null}
           {permission && recordingStatus === 'inactive' ? (
-            <button onClick={startRecording} type="button">
-              Start Recording
-            </button>
+             <Button
+             type="primary"
+             icon={<PlayCircleFilled />}
+             onClick={() => startRecording()}
+           >
+            StartRecording
+           </Button>
           ) : null}
           {recordingStatus === 'recording' ? (
-            <button onClick={stopRecording} type="button">
-              Stop Recording
-            </button>
+            <Button
+            type="primary"
+            icon={<PauseCircleFilled />}
+            onClick={() => stopRecording()}
+          >
+            StopRecording
+          </Button>
           ) : null}
         </div>
         {audio ? (
           <div className="audio-container">
-            <audio src={audio} controls></audio>
-            <a download href={audio}>
-              Download Recording
-            </a>
+            {/* <audio src={audio} controls></audio> */}
           </div>
         ) : null}
-      </main>
-    </div>
+    </Container3>
   );
 };
 

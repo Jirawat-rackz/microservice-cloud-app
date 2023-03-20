@@ -11,6 +11,14 @@ export const Container = styled.div`
   flex-direction: column;
 `;
 
+
+export const Container3 = styled.div`
+  /* display: flex;
+  justify-content: center; */
+  align-items: center;
+  flex-direction: column;
+`;
+
 export const SubmitButton = styled(Button)`
   width: 100%;
   margin-top: 8px;

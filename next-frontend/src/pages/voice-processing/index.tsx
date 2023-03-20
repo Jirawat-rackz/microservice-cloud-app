@@ -1,8 +1,22 @@
 import React from 'react';
 import { useState, useRef, SetStateAction } from 'react';
+import '../../styles/audio-recorder.module.css';
 import AudioRecorder from '@/components/audio-recorder';
 import initPocketBase from '@/helpers/init-pocketbase.helper';
 import { GetServerSidePropsContext } from 'next/types';
+import { AudioOutlined } from '@ant-design/icons';
+import { Input, Space } from 'antd';
+import { Button, Form, message, Upload } from 'antd';
+import type { UploadFile } from 'antd/es/upload/interface';
+import { UploadOutlined } from '@ant-design/icons';
+import type { UploadProps } from 'antd';
+import {
+  Container,
+  Container2,
+  Container3,
+  TextInput,
+  Header1,
+} from '@/styles/voiceprocessing.style';
 
 function playAud() {
   const audioFileInput = document.getElementById('audioFileInput') as any;
@@ -23,117 +37,49 @@ const App = () => {
   };
 
   return (
-    <div>
-      <style jsx global>
-        {`
-          h1 {
-            font-weight: 700;
-          }
-          p {
-            margin-bottom: 10px;
-          }
-          .button-flex {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-          }
-          .audio-controls,
-          .video-controls {
-            margin-bottom: 20px;
-          }
-          .audio-player,
-          .video-player {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-          }
-          .audio-player,
-          .video-player,
-          .recorded-player {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-          }
-          .live-player {
-            height: 200px;
-            width: 400px;
-            border: 1px solid #646cff;
-            margin-bottom: 30px;
-          }
-          .recorded-player video {
-            height: 400px;
-            width: 800px;
-          }
-          #aurec {
-            float: left;
-          }
-          .card {
-            border: 1px solid #ddd;
-            background: #f4f4f4;
-            padding: 20px;
-            margin-bottom: 10px;
-          }
-          #header {
-            font-size: 30px;
-            margin-bottom: 15px;
-            background: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-          }
-        `}
-      </style>
-      <header id="header">AI Recorder</header>
-      <div className="button-flex"></div>
-      <article className="card">
-        <TextForm></TextForm>
-      </article>
-      <section id="aurec" className="card">
+    <Container>
+      <Header1>AI Recorder</Header1>
+      <AppInput></AppInput>
+      <Container2>
         {<AudioRecorder />}
-      </section>
-      <section id="auup" className="card">
-        <div>
-          <h2>Upload Audio File</h2>
-          <input
-            type="file"
-            id="audioFileInput"
-            accept=".wav"
-            onInput={playAud}
-            onChange={playAud}
-          />
-        </div>
-        <div>
-          <audio controls id="audioPlayer" src="audio/mpeg"></audio>
-        </div>
-      </section>
-    </div>
+        <UploadFileAudio></UploadFileAudio>
+      </Container2>
+    </Container>
   );
 };
 
-function TextForm() {
-  const [inputText, setInputText] = useState('');
+const props: UploadProps = {
+  name: 'file',
+  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+  accept: '.wav',
+  headers: {
+    authorization: 'authorization-text',
+  },
+  onChange(info) {
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      message.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  },
+};
 
-  function handleChange(event: any) {
-    setInputText(event.target.value);
-  }
+const UploadFileAudio: React.FC = () => (
+  <Container3>
+    <h2>Upload File</h2>
+    <Upload {...props}>
+      <Button icon={<UploadOutlined />}>Click to Upload</Button>
+    </Upload>
+  </Container3>
+);
 
-  function handleSubmit(event: any) {
-    event.preventDefault();
-    console.log('Submitted text: ', inputText);
-    // Here you can do something with the submitted text
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Enter some text:
-        <input type="text" value={inputText} onChange={handleChange} />
-      </label>
-      <button type="submit">Submit</button>
-      <p>Input text: {inputText}</p>
-    </form>
-  );
-}
+const AppInput: React.FC = () => (
+  <>
+    <TextInput disabled></TextInput>
+  </>
+);
 
 export default App;
