@@ -1,13 +1,7 @@
 import React from 'react';
-import { useState, useRef, SetStateAction } from 'react';
 import '../../styles/audio-recorder.module.css';
 import AudioRecorder from '@/components/audio-recorder';
-import initPocketBase from '@/helpers/init-pocketbase.helper';
-import { GetServerSidePropsContext } from 'next/types';
-import { AudioOutlined } from '@ant-design/icons';
-import { Input, Space } from 'antd';
-import { Button, Form, message, Upload } from 'antd';
-import type { UploadFile } from 'antd/es/upload/interface';
+import { Button, message, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import {
@@ -17,34 +11,20 @@ import {
   TextInput,
   Header1,
 } from '@/styles/voiceprocessing.style';
+import LayoutProvider from '@/providers/layout.provider';
 
-function playAud() {
-  const audioFileInput = document.getElementById('audioFileInput') as any;
-  const audioPlayer = document.getElementById('audioPlayer') as any;
-
-  audioFileInput?.addEventListener('change', function () {
-    const file = audioFileInput.files[0];
-    audioPlayer.src = URL.createObjectURL(file);
-  });
-}
-
-const App = () => {
-  let [recordOption, setRecordOption] = useState('video');
-  const toggleRecordOption = (type: SetStateAction<string>) => {
-    return () => {
-      setRecordOption(type);
-    };
-  };
-
+const VoiceProcessingPage: React.FC = () => {
   return (
-    <Container>
-      <Header1>AI Recorder</Header1>
-      <AppInput></AppInput>
-      <Container2>
-        {<AudioRecorder />}
-        <UploadFileAudio></UploadFileAudio>
-      </Container2>
-    </Container>
+    <LayoutProvider>
+      <Container>
+        <Header1>AI Recorder</Header1>
+        <TextInput disabled />
+        <Container2>
+          <AudioRecorder />
+          <UploadFileAudio />
+        </Container2>
+      </Container>
+    </LayoutProvider>
   );
 };
 
@@ -76,10 +56,4 @@ const UploadFileAudio: React.FC = () => (
   </Container3>
 );
 
-const AppInput: React.FC = () => (
-  <>
-    <TextInput disabled></TextInput>
-  </>
-);
-
-export default App;
+export default VoiceProcessingPage;

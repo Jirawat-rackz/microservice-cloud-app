@@ -1,5 +1,5 @@
-import React from 'react';
-import type { NextPage } from 'next';
+import React, { ReactElement } from 'react';
+import type { GetServerSidePropsContext, NextPage } from 'next';
 import { Card, Form, Input, Typography } from 'antd';
 
 import { Container, SubmitButton } from '@/styles/login.style';
@@ -10,7 +10,7 @@ type IFormLoginProps = {
   password: string;
 };
 
-const LoginPage: NextPage = () => {
+const LoginPage = () => {
   const [form] = Form.useForm<IFormLoginProps>();
   const { login } = useAuth();
 

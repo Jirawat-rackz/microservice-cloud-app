@@ -2,13 +2,7 @@ import type { GetServerSidePropsContext } from 'next';
 import connectPocketBase from './connect-pocketbase.helper';
 
 const initPocketBase = async (context: GetServerSidePropsContext) => {
-  const pb = await connectPocketBase();
-
-  pb.authStore.loadFromCookie(context.req?.headers?.cookie || '');
-
-  pb.authStore.onChange(() => {
-    context.res?.setHeader('set-cookie', pb.authStore.exportToCookie());
-  });
+  const pb = connectPocketBase();
 
   try {
     pb.authStore.isValid && (await pb.collection('users').authRefresh());
