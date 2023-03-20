@@ -6,7 +6,6 @@ import Providers from '@/providers';
 import '@/styles/globals.css';
 import connectPocketBase from '@/helpers/connect-pocketbase.helper';
 import { useRouter } from 'next/router';
-import LayoutProvider from '@/providers/layout.provider';
 
 export const pb = connectPocketBase();
 
