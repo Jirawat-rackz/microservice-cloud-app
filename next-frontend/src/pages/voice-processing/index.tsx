@@ -1,6 +1,8 @@
 import React from 'react';
 import { useState, useRef, SetStateAction } from 'react';
 import AudioRecorder from '@/components/audio-recorder';
+import initPocketBase from '@/helpers/init-pocketbase.helper';
+import { GetServerSidePropsContext } from 'next/types';
 
 function playAud() {
   const audioFileInput = document.getElementById('audioFileInput') as any;

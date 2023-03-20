@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { LogoutOutlined } from '@ant-design/icons';
-import { Layout as AntLayout, Menu, theme } from 'antd';
+import { Layout as AntLayout, Menu, notification, theme } from 'antd';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 
 import { ProviderProps } from '@/providers';
@@ -13,6 +13,12 @@ const LayoutProvider: React.FC<ProviderProps> = ({ children }) => {
   const [collapsed, setCollapsed] = React.useState<boolean>(true);
   const router = useRouter();
   const { user, logout } = useAuth();
+
+  React.useEffect(() => {
+    if (!user && router.pathname !== '/login') {
+      router.push('/login');
+    }
+  }, [router.pathname]);
 
   const {
     token: { colorBgContainer },
@@ -47,7 +53,7 @@ const LayoutProvider: React.FC<ProviderProps> = ({ children }) => {
               <Menu
                 theme="dark"
                 mode="inline"
-                defaultSelectedKeys={[router.asPath]}
+                defaultSelectedKeys={['/dashboard']}
                 items={routeMenu}
               />
               <Menu

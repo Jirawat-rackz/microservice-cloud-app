@@ -1,7 +1,8 @@
 import React from 'react';
 import type { NextPage } from 'next';
+import { Card, Form, Input, Typography } from 'antd';
+
 import { Container, SubmitButton } from '@/styles/login.style';
-import { Button, Card, Form, Input, Typography } from 'antd';
 import { useAuth } from '@/providers/auth.provider';
 
 type IFormLoginProps = {
@@ -10,12 +11,11 @@ type IFormLoginProps = {
 };
 
 const LoginPage: NextPage = () => {
-  // const [form] = Form.useForm<IFormLoginProps>();
+  const [form] = Form.useForm<IFormLoginProps>();
   const { login } = useAuth();
 
-  const onFinish = React.useCallback((values: IFormLoginProps) => {
-    console.log('Success:', values);
-    login();
+  const onFinish = React.useCallback(async (values: IFormLoginProps) => {
+    login(values.username, values.password);
   }, []);
 
   return (
@@ -24,19 +24,26 @@ const LoginPage: NextPage = () => {
         <Typography.Title level={3} style={{ textAlign: 'center' }}>
           X Stack
         </Typography.Title>
-
         <Form
           name="login-form"
-          // form={form}
+          form={form}
           layout="vertical"
           style={{ paddingLeft: 16, paddingRight: 16 }}
           onFinish={onFinish}
         >
-          <Form.Item label="Username" name="username" rules={[]}>
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Password" name="password" rules={[]}>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true }]}
+          >
             <Input.Password />
           </Form.Item>
 
