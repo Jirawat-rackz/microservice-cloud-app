@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -40,11 +41,22 @@ func main() {
 }
 
 func sub(client mqtt.Client) {
+	apiPath := fmt.Sprintf("%s://%s:%q%s", viper.GetString("POCKETBASE_PUBLISH_PROTOCOL"), viper.GetString("POCKETBASE_PUBLISH_HOST"), viper.GetInt("POCKETBASE_PUBLISH_PORT"), viper.GetString("POCKETBASE_PUBLISH_PATH"))
 	topic := viper.GetString("MQTT_SUBSCRIBE_TOPIC")
 	token := client.Subscribe(topic, 1, func(client mqtt.Client, msg mqtt.Message) {
-		fmt.Println(string(msg.Payload()))
+		payload := string(msg.Payload())
+		fmt.Printf("Received message: %s from topic: %s", payload, msg.Topic())
+
+		c := http.Client{Timeout: time.Duration(1) * time.Second}
+		resp, err := c.Post(apiPath, "application/json", strings.NewReader(payload))
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Printf("Update status to pocketbase: %s", resp.Status)
+
 	})
 	token.Wait()
-	time.Sleep(5 * time.Second)
 	fmt.Printf("Subscribed to topic: %s", topic)
 }
