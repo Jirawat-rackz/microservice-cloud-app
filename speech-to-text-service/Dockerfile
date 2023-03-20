@@ -107,7 +107,6 @@ WORKDIR /
 RUN git clone https://github.com/coqui-ai/STT.git
 RUN git submodule sync
 RUN git submodule update --init
-COPY Dockerfile.build /STT/Dockerfile.build
 
 # >> START Build and bind
 
