@@ -14,6 +14,8 @@ services:
     entrypoint: ["/bin/bash", "start.sh"]
     volumes:
       - ./speech-to-text-service:/STT
+    networks:
+        - sst-network
     depends_on:
       - emqx
 
@@ -22,6 +24,8 @@ services:
     ports:
       - 1883:1883
       - 18083:18083
+    networks:
+        - sst-network
 
   pocketbase:
     build:
@@ -31,6 +35,8 @@ services:
         - VERSION=0.13.4
     ports:
       - 8090:8090
+    networks:
+        - sst-network
 
   speech-publisher:
     build:
@@ -42,6 +48,8 @@ services:
     restart: always
     ports:
       - 8080:8080
+    networks:
+        - sst-network
     depends_on:
       - emqx
       - pocketbase
@@ -53,6 +61,8 @@ services:
       args:
         - APP_NAME=speechconsumer
     restart: always
+    networks:
+        - sst-network
     depends_on:
       - emqx
       - pocketbase
@@ -64,3 +74,9 @@ services:
     restart: always
     ports:
       - 3000:3000
+    networks:
+        - sst-network
+
+networks:
+  sst-network:
+    driver: bridge
