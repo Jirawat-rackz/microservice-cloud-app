@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xstack-frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xstack-frontend
+  template:
+    metadata:
+      labels:
+        app: xstack-frontend
+    spec:
+      containers:
+        - name: xstack-frontend
+          image: xstack-frontend:v1
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xstack-frontend-srv
+spec:
+  type: LoadBalancer
+  selector:
+    app: xstack-frontend
+  ports:
+    - name: xstack-frontend-http
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

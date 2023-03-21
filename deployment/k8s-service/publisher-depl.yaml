@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xstack-publisher-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xstack-publisher
+  template:
+    metadata:
+      labels:
+        app: xstack-publisher
+    spec:
+      containers:
+        - name: xstack-publisher
+          image: xstack-publisher:v1
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xstack-publisher-srv
+spec:
+  type: LoadBalancer
+  selector:
+    app: xstack-publisher
+  ports:
+    - name: xstack-publisher-http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080

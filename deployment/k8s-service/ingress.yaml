@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: xstack-tls
+data:
+  tls.crt:
+  tls.key:
+type: kubernetes.io/tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: xstack-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+    - hosts:
+        - "*.x-stack.xyz"
+      secretName: xstack-tls
+  rules:
+    - host: www.x-stack.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: xstack-frontend-srv
+                port:
+                  number: 3000
+    - host: api.x-stack.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: xstack-publisher-srv
+                port:
+                  number: 8080

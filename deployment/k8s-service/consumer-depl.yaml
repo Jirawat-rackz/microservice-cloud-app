@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xstack-consumer-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xstack-consumer
+  template:
+    metadata:
+      labels:
+        app: xstack-consumer
+    spec:
+      containers:
+        - name: xstack-consumer
+          image: xstack-consumer:v1
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xstack-consumer-srv
+spec:
+  type: LoadBalancer
+  selector:
+    app: xstack-consumer
