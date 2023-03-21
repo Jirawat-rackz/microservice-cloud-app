@@ -180,9 +180,6 @@ RUN rm -rf kenlm && \
 # Done
 WORKDIR /STT
 
-RUN wget https://coqui.gateway.scarf.sh/english/coqui/v1.0.0-large-vocab/model.tflite
-RUN wget https://coqui.gateway.scarf.sh/english/coqui/v1.0.0-large-vocab/large_vocabulary.scorer
-
 COPY main.py main.py
 COPY requirements.txt requirements.txt
 COPY start.sh start.sh

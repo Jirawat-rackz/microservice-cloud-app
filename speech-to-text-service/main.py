@@ -13,17 +13,17 @@ import base64
 # from dotenv import load_dotenv
 # load_dotenv()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # STT ENV
-    SCORER_PATH = os.environ.get('STT_SCORER_PATH')
-    MODEL_PATH = os.environ.get('STT_MODEL_PATH')
+    SCORER_PATH = os.environ.get("STT_SCORER_PATH")
+    MODEL_PATH = os.environ.get("STT_MODEL_PATH")
 
     # MQTT ENV
-    MQTT_URL = os.environ.get('MQTT_URL')
-    MQTT_PORT = os.environ.get('MQTT_PORT')
-    MQTT_TOPIC_SUB = os.environ.get('MQTT_TOPIC_SUB')
-    MQTT_TOPIC_PUB = os.environ.get('MQTT_TOPIC_PUB')
+    MQTT_URL = os.environ.get("MQTT_URL")
+    MQTT_PORT = os.environ.get("MQTT_PORT")
+    MQTT_TOPIC_SUB = os.environ.get("MQTT_TOPIC_SUB")
+    MQTT_TOPIC_PUB = os.environ.get("MQTT_TOPIC_PUB")
 
     # init model
     ds = Model(MODEL_PATH)
@@ -36,8 +36,9 @@ if __name__ == '__main__':
 
         # Resample data
         number_of_samples = round(
-            len(data) * float(desired_sample_rate) / sampling_rate)
-        data = sps.resample(data, number_of_samples).astype('int16')
+            len(data) * float(desired_sample_rate) / sampling_rate
+        )
+        data = sps.resample(data, number_of_samples).astype("int16")
         return ds.stt(data)
 
     # init MQTT
@@ -48,25 +49,22 @@ if __name__ == '__main__':
             print("Failed to connect, return code %d\n", rc)
 
     def on_message(client, userdata, msg):
-        '''
+        """
         ----Subscribe msg model----
         user_id : string
         data:     string
-        '''
+        """
         decode = json.loads(msg.payload)
-        base_data = decode['data'].split(',')[1]
+        base_data = decode["data"].split(",")[1]
         wav_data = base64.b64decode(base_data)
         text = run_stt(wav_data)
 
-        '''
+        """
         ----Publish msg model----
         user_id : string
-        data:     string
-        '''
-        pub_data = {
-            "user_id": decode.user_id,
-            "data": text
-        }
+        word:     string
+        """
+        pub_data = {"user_id": decode.user_id, "word": text}
         client.publish(MQTT_TOPIC_PUB, json.dumps(pub_data))
 
     client = mqtt_client.Client()

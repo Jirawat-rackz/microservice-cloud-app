@@ -5,13 +5,13 @@ services:
     image: dockerhub.warayut.xyz/microservice-cloud-app-stt-py
     restart: always
     environment:
-      - STT_SCORER_PATH=large_vocabulary.scorer
-      - STT_MODEL_PATH=model.tflite
+      - STT_SCORER_PATH=./large_vocabulary.scorer
+      - STT_MODEL_PATH=./model.tflite
       - MQTT_URL=emqx
       - MQTT_PORT=1883
       - MQTT_TOPIC_SUB=voice-publish
       - MQTT_TOPIC_PUB=voice-consume
-    entrypoint: ["bin/sh", "start.sh"]
+    entrypoint: ["/bin/bash", "start.sh"]
     volumes:
       - ./speech-to-text-service:/STT
     depends_on:

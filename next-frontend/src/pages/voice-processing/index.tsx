@@ -13,13 +13,25 @@ import {
 import LayoutProvider from '@/providers/layout.provider';
 import axios from 'axios';
 import { pb } from '../_app';
+import { TDashboard } from '@/models/dashboard.model';
 
 const VoiceProcessingPage: React.FC = () => {
+  const [text, setText] = React.useState<string>('');
+
+  pb.collection('dashboard').subscribe<TDashboard>('*', (data) => {
+    if (
+      data.action === 'create' &&
+      data.record.user_id === pb.authStore.model?.id
+    ) {
+      setText(data.record.word);
+    }
+  });
+
   return (
     <LayoutProvider>
       <Container>
         <Header1>AI Recorder</Header1>
-        <TextInput disabled />
+        <TextInput disabled value={text} />
         <Container2>
           <AudioRecorder />
           <UploadFileAudio />
