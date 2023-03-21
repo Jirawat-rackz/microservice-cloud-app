@@ -64,7 +64,7 @@ if __name__ == "__main__":
         user_id : string
         word:     string
         """
-        pub_data = {"user_id": decode.user_id, "word": text}
+        pub_data = {"user_id": decode["user_id"], "word": text}
         client.publish(MQTT_TOPIC_PUB, json.dumps(pub_data))
 
     client = mqtt_client.Client()
