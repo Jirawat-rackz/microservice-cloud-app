@@ -54,7 +54,8 @@ if __name__ == '__main__':
         data:     string
         '''
         decode = json.loads(msg.payload)
-        wav_data = base64.b64decode(decode['data'])
+        base_data = decode['data'].split(',')[1]
+        wav_data = base64.b64decode(base_data)
         text = run_stt(wav_data)
 
         '''
