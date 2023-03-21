@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table } from 'antd';
 import LayoutProvider from '@/providers/layout.provider';
+import { pb } from '../_app';
 
 const columns = [
   {
@@ -26,15 +27,14 @@ function DashboardPage() {
   const [page, setPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(10);
 
-  // getListSubscribeCore(page, pageSize, setDataSource);
+  const fetchData = React.useCallback(async () => {
+    const result = await pb.collection('dashboard').getList(page, pageSize);
+    setDataSource(result.items);
+  }, [page, pageSize]);
 
-  // React.useEffect(() => {
-  //   const fetchData = async () => {
-  //     const result = await getCoreList(page, pageSize);
-  //     setDataSource(result.items);
-  //   };
-  //   fetchData();
-  // }, [page, pageSize]);
+  pb.collection('dashboard').subscribe('*', () => {
+    fetchData();
+  });
 
   return (
     <LayoutProvider>
