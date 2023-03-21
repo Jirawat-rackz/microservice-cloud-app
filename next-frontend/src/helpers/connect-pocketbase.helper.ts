@@ -1,6 +1,6 @@
 import PocketBase from 'pocketbase';
 
-let pocketContext = new PocketBase('http://127.0.0.1:8090');
+let pocketContext = new PocketBase(process.env.NEXT_PUBLIC_API_DB);
 
 const connectPocketBase = () => {
   const pb = pocketContext;
