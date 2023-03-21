@@ -2,12 +2,12 @@ version: "3"
 
 services:
   stt-py:
-    build: ./speech-to-text-service/Dockerfile
-    volumes:
-      - speech-to-text-service:/STT
+    build:
+      context: ./speech-to-text-service
+      dockerfile: Dockerfile
     environment:
-      - STT_SCORER_PATH=
-      - STT_MODEL_PATH=
+      - STT_SCORER_PATH=large_vocabulary.scorer
+      - STT_MODEL_PATH=model.tflite
       - MQTT_URL=emqx
       - MQTT_PORT=1883
       - MQTT_TOPIC_SUB=voice-publish

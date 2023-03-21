@@ -104,9 +104,10 @@ RUN echo "build --spawn_strategy=standalone --genrule_strategy=standalone" \
 
 WORKDIR /
 
+# Clone STT repository
 RUN git clone https://github.com/coqui-ai/STT.git
-RUN git submodule sync
-RUN git submodule update --init
+RUN cd STT && git submodule sync
+RUN cd STT && git submodule update --init
 
 # >> START Build and bind
 
@@ -179,3 +180,9 @@ RUN rm -rf kenlm && \
 # Done
 WORKDIR /STT
 
+RUN wget https://coqui.gateway.scarf.sh/english/coqui/v1.0.0-large-vocab/model.tflite
+RUN wget https://coqui.gateway.scarf.sh/english/coqui/v1.0.0-large-vocab/large_vocabulary.scorer
+
+COPY main.py main.py
+COPY requirements.txt requirements.txt
+COPY start.sh start.sh
