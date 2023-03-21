@@ -41,7 +41,7 @@ func main() {
 }
 
 func sub(client mqtt.Client) {
-	apiPath := fmt.Sprintf("%s://%s:%q%s", viper.GetString("POCKETBASE_PUBLISH_PROTOCOL"), viper.GetString("POCKETBASE_PUBLISH_HOST"), viper.GetInt("POCKETBASE_PUBLISH_PORT"), viper.GetString("POCKETBASE_PUBLISH_PATH"))
+	apiPath := fmt.Sprintf("%s://%s:%d%s", viper.GetString("POCKETBASE_PUBLISH_PROTOCOL"), viper.GetString("POCKETBASE_PUBLISH_HOST"), viper.GetInt("POCKETBASE_PUBLISH_PORT"), viper.GetString("POCKETBASE_PUBLISH_PATH"))
 	topic := viper.GetString("MQTT_SUBSCRIBE_TOPIC")
 	token := client.Subscribe(topic, 1, func(client mqtt.Client, msg mqtt.Message) {
 		payload := string(msg.Payload())
