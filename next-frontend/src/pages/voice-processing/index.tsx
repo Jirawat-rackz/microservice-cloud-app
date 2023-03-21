@@ -1,9 +1,8 @@
 import React from 'react';
 import '../../styles/audio-recorder.module.css';
 import AudioRecorder from '@/components/audio-recorder';
-import { Button, message, notification, Upload } from 'antd';
+import { Button, notification, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import type { UploadProps } from 'antd';
 import {
   Container,
   Container2,
