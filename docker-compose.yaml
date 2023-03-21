@@ -2,9 +2,8 @@ version: "3"
 
 services:
   stt-py:
-    build:
-      context: ./speech-to-text-service
-      dockerfile: Dockerfile
+    image: dockerhub.warayut.xyz/microservice-cloud-app-stt-py
+    restart: always
     environment:
       - STT_SCORER_PATH=large_vocabulary.scorer
       - STT_MODEL_PATH=model.tflite
@@ -13,6 +12,10 @@ services:
       - MQTT_TOPIC_SUB=voice-publish
       - MQTT_TOPIC_PUB=voice-consume
     entrypoint: ["bin/sh", "start.sh"]
+    volumes:
+      - ./speech-to-text-service:/STT
+    depends_on:
+      - emqx
 
   emqx:
     image: emqx:5
