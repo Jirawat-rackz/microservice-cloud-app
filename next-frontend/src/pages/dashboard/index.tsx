@@ -7,7 +7,7 @@ const columns = [
   {
     title: 'userId',
     dataIndex: 'userId',
-    key: 'userId',
+    key: 'id',
   },
   {
     title: 'word',
@@ -17,7 +17,14 @@ const columns = [
   {
     title: 'created_at',
     dataIndex: 'created_at',
-    key: 'created_at',
+    key: 'created',
+    render: (_: any, { created }: any) => {
+      return (
+        new Date(created).toLocaleDateString() +
+        ' ' +
+        new Date(created).toLocaleTimeString()
+      );
+    },
   },
 ];
 
