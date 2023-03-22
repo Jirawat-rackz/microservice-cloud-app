@@ -20,13 +20,18 @@ const VoiceProcessingPage: React.FC = () => {
 
   useEffect(() => {
     pb.collection('dashboard').subscribe<TDashboard>('*', (data) => {
-      if (
-        data.action === 'create' &&
-        data.record.user_id === pb.authStore.model?.id
-      ) {
-        setText(data.record.word);
-      }
+      console.log({ data });
+
+      // if (
+      //   data.action === 'create' &&
+      //   data.record.user_id === pb.authStore.model?.id
+      // ) {
+      //   setText(data.record.word);
+      // }
     });
+    return () => {
+      pb.collection('dashboard').unsubscribe('*');
+    };
   }, []);
 
   return (

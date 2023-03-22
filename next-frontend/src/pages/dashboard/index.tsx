@@ -36,6 +36,11 @@ function DashboardPage() {
     pb.collection('dashboard').subscribe('*', () => {
       fetchData();
     });
+    fetchData();
+
+    return () => {
+      pb.collection('dashboard').unsubscribe('*');
+    };
   }, []);
 
   return (
