@@ -5,18 +5,13 @@ import { pb } from '../_app';
 
 const columns = [
   {
-    title: 'userId',
-    dataIndex: 'userId',
-    key: 'id',
-  },
-  {
-    title: 'word',
+    title: 'Word',
     dataIndex: 'word',
     key: 'word',
   },
   {
-    title: 'created_at',
-    dataIndex: 'created_at',
+    title: 'Create at',
+    dataIndex: 'created',
     key: 'created',
     render: (_: any, { created }: any) => {
       return (
@@ -35,7 +30,9 @@ function DashboardPage() {
   const [pageSize, setPageSize] = React.useState<number>(10);
 
   const fetchData = React.useCallback(async () => {
-    const result = await pb.collection('dashboard').getList(page, pageSize);
+    const result = await pb
+      .collection('dashboard')
+      .getList(page, pageSize, { filter: `id='${pb.authStore.model?.id}'` });
     setDataSource(result.items);
   }, [page, pageSize]);
 
