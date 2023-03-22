@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table } from 'antd';
 import LayoutProvider from '@/providers/layout.provider';
 import { pb } from '../_app';
@@ -32,9 +32,11 @@ function DashboardPage() {
     setDataSource(result.items);
   }, [page, pageSize]);
 
-  pb.collection('dashboard').subscribe('*', () => {
-    fetchData();
-  });
+  useEffect(() => {
+    pb.collection('dashboard').subscribe('*', () => {
+      fetchData();
+    });
+  }, []);
 
   return (
     <LayoutProvider>

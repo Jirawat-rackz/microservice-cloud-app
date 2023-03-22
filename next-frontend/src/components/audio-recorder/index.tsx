@@ -18,7 +18,7 @@ const AudioRecorder = () => {
   const [stream, setStream] = React.useState<MediaStream | null>(null);
   const [audioChunks, setAudioChunks] = React.useState<any[]>([]);
   const [audio, setAudio] = React.useState<string | null>(null);
-  const mimeType = 'audio/x-wav';
+  const mimeType = 'audio/wav';
 
   const [api, contextHolder] = notification.useNotification();
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../../styles/audio-recorder.module.css';
 import AudioRecorder from '@/components/audio-recorder';
 import { Button, notification, Upload } from 'antd';
@@ -18,14 +18,16 @@ import { TDashboard } from '@/models/dashboard.model';
 const VoiceProcessingPage: React.FC = () => {
   const [text, setText] = React.useState<string>('');
 
-  pb.collection('dashboard').subscribe<TDashboard>('*', (data) => {
-    if (
-      data.action === 'create' &&
-      data.record.user_id === pb.authStore.model?.id
-    ) {
-      setText(data.record.word);
-    }
-  });
+  useEffect(() => {
+    pb.collection('dashboard').subscribe<TDashboard>('*', (data) => {
+      if (
+        data.action === 'create' &&
+        data.record.user_id === pb.authStore.model?.id
+      ) {
+        setText(data.record.word);
+      }
+    });
+  }, []);
 
   return (
     <LayoutProvider>
