@@ -105,7 +105,7 @@ jobs:
           file: ./go-speech-publisher/Dockerfile
           push: true
           tags: rackz/x-stack:speech-publisher-${{ needs.tag-version-commit.outputs.tag-version }}
-          build-arg: |
+          build-args: |
             APP_NAME=speechpublisher
 
   build-speech-consumer:
@@ -138,7 +138,7 @@ jobs:
           file: ./go-speech-publisher/Dockerfile
           push: true
           tags: rackz/x-stack:speech-consumer-${{ needs.tag-version-commit.outputs.tag-version }}
-          build-arg: |
+          build-args: |
             APP_NAME=speechconsumer
 
   build-pocketbase:
@@ -171,7 +171,7 @@ jobs:
           file: ./pocketbase/Dockerfile
           push: true
           tags: rackz/x-stack:pocketbase-${{ needs.tag-version-commit.outputs.tag-version }}
-          build-arg: |
+          build-args: |
             VERSION=0.13.4
 
   build-speech-to-text-service:
