@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-env:
-  IMAGE_NAME_PREFIX: rackz
-
 jobs:
   files-changed:
     name: detect what files changed
@@ -35,7 +32,7 @@ jobs:
     needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
-      image_name: ${{ env.IMAGE_NAME_PREFIX }}/next-frontend
+      image_name: rackz/next-frontend
       file: ./next-frontend/Dockerfile
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
@@ -46,7 +43,7 @@ jobs:
     needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
-      image_name: ${{ env.IMAGE_NAME_PREFIX }}/speech-publisher
+      image_name: rackz/speech-publisher
       file: ./go-speech-publisher/Dockerfile
       build-arg: |
         APP_NAME=speechpublisher
@@ -60,7 +57,7 @@ jobs:
     needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
-      image_name: ${{ env.IMAGE_NAME_PREFIX }}/speech-consumer
+      image_name: rackz/speech-consumer
       file: ./go-speech-publisher/Dockerfile
       build-arg: |
         APP_NAME=speechconsumer
@@ -73,7 +70,7 @@ jobs:
     needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
-      image_name: ${{ env.IMAGE_NAME_PREFIX }}/pocketbase
+      image_name: rackz/pocketbase
       file: ./pocketbase/Dockerfile
       build-arg: |
         VERSION=0.13.4
