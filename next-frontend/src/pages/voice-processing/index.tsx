@@ -6,7 +6,7 @@ import {
   TextInput,
   Header1,
   Content,
-} from '@/pages/voice-processing/index.style';
+} from '@/styles/voice-processing.style';
 import LayoutProvider from '@/providers/layout.provider';
 import { pb } from '../_app';
 import { TDashboard } from '@/models/dashboard.model';
