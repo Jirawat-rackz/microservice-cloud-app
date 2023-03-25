@@ -6,8 +6,30 @@ on:
       - main
 
 jobs:
+  files-changed:
+    name: detect what files changed
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    # Map a step output to a job output
+    outputs:
+      publisher-message: ${{ steps.changes.outputs.publisher-message }}
+      consumer-message: ${{ steps.changes.outputs.consumer-message }}
+      next-frontend: ${{ steps.changes.outputs.next-frontend }}
+      pocketbase: ${{ steps.changes.outputs.pocketbase }}
+      speech-to-text-service: ${{ steps.changes.outputs.speech-to-text-service }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check for backend file changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          token: ${{ github.token }}
+          filters: .github/file-filters.yaml
 
   build-next-frontend:
+    if: needs.files-changed.outputs.next-frontend == 'true'
+    needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
       image_name: rackz/next-frontend
@@ -17,6 +39,8 @@ jobs:
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   build-speech-publisher:
+    if: needs.files-changed.outputs.publisher-message == 'true'
+    needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
       image_name: rackz/speech-publisher
@@ -29,6 +53,8 @@ jobs:
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   build-speech-consumer:
+    if: needs.files-changed.outputs.consumer-message == 'true'
+    needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
       image_name: rackz/speech-consumer
@@ -40,6 +66,8 @@ jobs:
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   build-pocketbase:
+    if: needs.files-changed.outputs.pocketbase == 'true'
+    needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
       image_name: rackz/pocketbase
