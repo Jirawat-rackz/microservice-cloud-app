@@ -7,6 +7,8 @@ on:
 
 env:
   IMAGE_NAME_PREFIX: rackz
+  REPOSITORY: ${{ github.repository }}
+
 
 jobs:
   files-changed:
@@ -33,7 +35,7 @@ jobs:
   build-next-frontend:
     if: needs.files-changed.outputs["next-frontend"] == 'true'
     needs: files-changed
-    uses: ./.github/workflows/docker-reusable-build.yaml
+    uses: ${{ env.REPOSITORY }}/.github/workflows/docker-reusable-build.yaml
     with:
       image_name: ${{ env.IMAGE_NAME_PREFIX }}/next-frontend
       file: ./next-frontend/Dockerfile
@@ -44,7 +46,7 @@ jobs:
   build-speech-publisher:
     if: needs.files-changed.outputs["publisher-message"] == 'true'
     needs: files-changed
-    uses: ./.github/workflows/docker-reusable-build.yaml
+    uses: ${{ env.REPOSITORY }}/.github/workflows/docker-reusable-build.yaml
     with:
       image_name: ${{ env.IMAGE_NAME_PREFIX }}/speech-publisher
       file: ./go-speech-publisher/Dockerfile
@@ -89,7 +91,7 @@ jobs:
   build-speech-consumer:
     if: needs.files-changed.outputs["publisher-message"] == 'true'
     needs: files-changed
-    uses: ./.github/workflows/docker-reusable-build.yaml
+    uses: ${{ env.REPOSITORY }}/.github/workflows/docker-reusable-build.yaml
     with:
       image_name: ${{ env.IMAGE_NAME_PREFIX }}/speech-consumer
       file: ./go-speech-publisher/Dockerfile
@@ -102,7 +104,7 @@ jobs:
   build-pocketbase:
     if: needs.files-changed.outputs["pocketbase"] == 'true'
     needs: files-changed
-    uses: ./.github/workflows/docker-reusable-build.yaml
+    uses: ${{ env.REPOSITORY }}/.github/workflows/docker-reusable-build.yaml
     with:
       image_name: ${{ env.IMAGE_NAME_PREFIX }}/pocketbase
       file: ./pocketbase/Dockerfile
