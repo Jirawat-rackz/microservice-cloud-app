@@ -30,7 +30,7 @@ jobs:
   build-next-frontend:
     if: needs.files-changed.outputs.next-frontend == 'true'
     needs: files-changed
-    uses: ./.github/workflows/docker-reusable-build.yaml
+    uses: Jirawat-rackz/microservice-cloud-app/.github/workflows/docker-reusable-build.yaml@main
     with:
       image_name: rackz/next-frontend
       file: ./next-frontend/Dockerfile
@@ -41,7 +41,7 @@ jobs:
   build-speech-publisher:
     if: needs.files-changed.outputs.publisher-message == 'true'
     needs: files-changed
-    uses: ./.github/workflows/docker-reusable-build.yaml
+    uses: Jirawat-rackz/microservice-cloud-app/.github/workflows/docker-reusable-build.yaml@main
     with:
       image_name: rackz/speech-publisher
       file: ./go-speech-publisher/Dockerfile
@@ -55,7 +55,7 @@ jobs:
   build-speech-consumer:
     if: needs.files-changed.outputs.consumer-message == 'true'
     needs: files-changed
-    uses: ./.github/workflows/docker-reusable-build.yaml
+    uses: Jirawat-rackz/microservice-cloud-app/.github/workflows/docker-reusable-build.yaml@main
     with:
       image_name: rackz/speech-consumer
       file: ./go-speech-publisher/Dockerfile
@@ -68,7 +68,7 @@ jobs:
   build-pocketbase:
     if: needs.files-changed.outputs.pocketbase == 'true'
     needs: files-changed
-    uses: ./.github/workflows/docker-reusable-build.yaml
+    uses: Jirawat-rackz/microservice-cloud-app/.github/workflows/docker-reusable-build.yaml@main
     with:
       image_name: rackz/pocketbase
       file: ./pocketbase/Dockerfile
