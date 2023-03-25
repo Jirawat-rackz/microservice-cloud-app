@@ -34,7 +34,7 @@ jobs:
           filters: ./.github/file-filters.yaml
 
   build-next-frontend:
-    # if: needs.files-changed.outputs.next-frontend == 'true'
+    if: needs.files-changed.outputs.next-frontend == 'true'
     needs:
       - files-changed
     runs-on: ubuntu-latest
@@ -68,7 +68,7 @@ jobs:
           tags: rackz/x-stack:next-frontend-v1
 
   build-speech-publisher:
-    # if: needs.files-changed.outputs.publisher-message == 'true'
+    if: needs.files-changed.outputs.publisher-message == 'true'
     needs:
       - files-changed
     runs-on: ubuntu-latest
@@ -104,7 +104,7 @@ jobs:
             APP_NAME=speechpublisher
 
   build-speech-consumer:
-    # if: needs.files-changed.outputs.consumer-message == 'true'
+    if: needs.files-changed.outputs.consumer-message == 'true'
     needs:
       - files-changed
     runs-on: ubuntu-latest
@@ -140,7 +140,7 @@ jobs:
             APP_NAME=speechconsumer
 
   build-pocketbase:
-    # if: needs.files-changed.outputs.pocketbase == 'true'
+    if: needs.files-changed.outputs.pocketbase == 'true'
     needs:
       - files-changed
     runs-on: ubuntu-latest
@@ -176,7 +176,7 @@ jobs:
             VERSION=0.13.4
 
   build-speech-to-text-service:
-    # if: needs.files-changed.outputs.pocketbase == 'true'
+    if: needs.files-changed.outputs.speech-to-text-service == 'true'
     needs:
       - files-changed
     runs-on: ubuntu-latest
