@@ -33,22 +33,10 @@ jobs:
           token: ${{ github.token }}
           filters: ./.github/file-filters.yaml
 
-  tag-version-commit:
-    name: Get Tag version
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    outputs:
-      tag-version: ${{ steps.tags.outputs.sha_short }}
-    steps:
-      - name: Get Tag Image
-        id: tags
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
   build-next-frontend:
     # if: needs.files-changed.outputs.next-frontend == 'true'
     needs:
       - files-changed
-      - tag-version-commit
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -73,13 +61,12 @@ jobs:
           context: ./next-frontend
           file: ./next-frontend/Dockerfile
           push: true
-          tags: rackz/x-stack:next-frontend-${{ needs.tag-version-commit.outputs.tag-version }}
+          tags: rackz/x-stack:next-frontend-v1
 
   build-speech-publisher:
     # if: needs.files-changed.outputs.publisher-message == 'true'
     needs:
       - files-changed
-      - tag-version-commit
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -104,7 +91,7 @@ jobs:
           context: ./go-speech-publisher
           file: ./go-speech-publisher/Dockerfile
           push: true
-          tags: rackz/x-stack:speech-publisher-${{ needs.tag-version-commit.outputs.tag-version }}
+          tags: rackz/x-stack:speech-publisher-v1
           build-args: |
             APP_NAME=speechpublisher
 
@@ -112,7 +99,6 @@ jobs:
     # if: needs.files-changed.outputs.consumer-message == 'true'
     needs:
       - files-changed
-      - tag-version-commit
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -137,7 +123,7 @@ jobs:
           context: ./go-speech-publisher
           file: ./go-speech-publisher/Dockerfile
           push: true
-          tags: rackz/x-stack:speech-consumer-${{ needs.tag-version-commit.outputs.tag-version }}
+          tags: rackz/x-stack:speech-consumer-v1
           build-args: |
             APP_NAME=speechconsumer
 
@@ -145,7 +131,6 @@ jobs:
     # if: needs.files-changed.outputs.pocketbase == 'true'
     needs:
       - files-changed
-      - tag-version-commit
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -170,7 +155,7 @@ jobs:
           context: ./pocketbase
           file: ./pocketbase/Dockerfile
           push: true
-          tags: rackz/x-stack:pocketbase-${{ needs.tag-version-commit.outputs.tag-version }}
+          tags: rackz/x-stack:pocketbase-v1
           build-args: |
             VERSION=0.13.4
 
@@ -178,7 +163,6 @@ jobs:
     # if: needs.files-changed.outputs.pocketbase == 'true'
     needs:
       - files-changed
-      - tag-version-commit
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -203,4 +187,4 @@ jobs:
           context: ./speech-to-text-service
           file: ./speech-to-text-service/Dockerfile
           push: true
-          tags: rackz/x-stack:speech-to-text-service-${{ needs.tag-version-commit.outputs.tag-version }}
+          tags: rackz/x-stack:speech-to-text-service-v1
