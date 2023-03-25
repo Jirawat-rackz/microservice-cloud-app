@@ -9,8 +9,6 @@ jobs:
   files-changed:
     name: detect what files changed
     runs-on: ubuntu-latest
-    timeout-minutes: 3
-    # Map a step output to a job output
     outputs:
       publisher-message: ${{ steps.changes.outputs.publisher-message }}
       consumer-message: ${{ steps.changes.outputs.consumer-message }}
