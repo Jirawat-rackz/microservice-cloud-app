@@ -73,7 +73,7 @@ jobs:
           context: ./next-frontend
           file: ./next-frontend/Dockerfile
           push: true
-          tags: rackz/next-frontend:${{ needs.tag-version-commit.outputs.tag-version }}
+          tags: rackz/x-stack:next-frontend-${{ needs.tag-version-commit.outputs.tag-version }}
 
   # build-speech-publisher:
   #   # if: needs.files-changed.outputs.publisher-message == 'true'
