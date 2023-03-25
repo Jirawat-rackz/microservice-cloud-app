@@ -28,7 +28,7 @@ jobs:
           filters: .github/file-filters.yaml
 
   build-next-frontend:
-    if: needs.files-changed.outputs["next-frontend"] == 'true'
+    if: needs.files-changed.outputs.next-frontend == 'true'
     needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
@@ -39,7 +39,7 @@ jobs:
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   build-speech-publisher:
-    if: needs.files-changed.outputs["publisher-message"] == 'true'
+    if: needs.files-changed.outputs.publisher-message == 'true'
     needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
@@ -53,7 +53,7 @@ jobs:
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   build-speech-consumer:
-    if: needs.files-changed.outputs["publisher-message"] == 'true'
+    if: needs.files-changed.outputs.consumer-message == 'true'
     needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
@@ -66,7 +66,7 @@ jobs:
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   build-pocketbase:
-    if: needs.files-changed.outputs["pocketbase"] == 'true'
+    if: needs.files-changed.outputs.pocketbase == 'true'
     needs: files-changed
     uses: ./.github/workflows/docker-reusable-build.yaml
     with:
