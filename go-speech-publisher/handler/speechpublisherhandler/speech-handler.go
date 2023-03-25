@@ -1,8 +1,11 @@
 package speechpublisherhandler
 
 import (
+	"log"
+
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/jirawat-rackz/go-speech-publisher/pkg/model"
 	"github.com/jirawat-rackz/go-speech-publisher/pkg/speech"
 )
@@ -25,12 +28,23 @@ func (handler SpeechPublisherHandler) SpeechPublisher(c *gin.Context) {
 
 	var data model.RequestGetSpeech
 
-	if err := c.ShouldBindJSON(&data); err != nil {
+	file, err := c.FormFile("data")
+	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
+	log.Println(file.Filename)
 
-	err := handler.SpeechService.ProcessPublishSpeech(data)
+	newFilename := uuid.New().String() + ".wav"
+
+	c.SaveUploadedFile(file, "./temp/"+newFilename)
+
+	userId := c.Request.FormValue("user_id")
+
+	data.Data = newFilename
+	data.UserId = userId
+
+	err = handler.SpeechService.ProcessPublishSpeech(data)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return

@@ -19,7 +19,7 @@ const VoiceProcessingPage: React.FC = () => {
     pb.collection('dashboard').subscribe<TDashboard>('*', (data) => {
       if (
         data.action === 'create' &&
-        data.record.id === pb.authStore.model?.id
+        data.record.user_id === pb.authStore.model?.id
       ) {
         setText(data.record.word);
       }

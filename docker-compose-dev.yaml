@@ -2,19 +2,20 @@ version: "3.9"
 
 services:
   stt-py:
-    image: dockerhub.warayut.xyz/microservice-cloud-app-stt-py
+    build:
+      context: ./speech-to-text-service
+      dockerfile: Dockerfile
     restart: always
     environment:
-      - STT_SCORER_PATH=./large_vocabulary.scorer
-      - STT_MODEL_PATH=./model.tflite
       - MQTT_URL=emqx
       - MQTT_PORT=1883
       - MQTT_TOPIC_SUB=voice-publish
       - MQTT_TOPIC_PUB=voice-consume
+      - OPENAI_API_KEY=
     volumes:
-      - ./speech-to-text-service:/STT
+      - tempfile:/app/temp
     networks:
-      - sst-network
+      - sst-network-backend
     depends_on:
       - emqx
 
@@ -24,7 +25,7 @@ services:
       - 1883:1883
       - 18083:18083
     networks:
-      - sst-network
+      - sst-network-backend
 
   pocketbase:
     build:
@@ -34,8 +35,11 @@ services:
         - VERSION=0.13.4
     ports:
       - 8090:8090
+    volumes:
+      - ./pocketbase/pb_data:/pb_data
     networks:
-      - sst-network
+      - sst-network-backend
+      - sst-network-frontend
 
   speech-publisher:
     build:
@@ -60,7 +64,9 @@ services:
     ports:
       - 8080:8080
     networks:
-      - sst-network
+      - sst-network-backend
+    volumes:
+      - tempfile:/app/temp
     depends_on:
       - emqx
       - pocketbase
@@ -73,16 +79,18 @@ services:
         - APP_NAME=speechconsumer
     restart: always
     networks:
-      - sst-network
+      - sst-network-backend
     environment:
       - MQTT_HOST=emqx
       - MQTT_PORT=1883
       - USERNAME=
       - PASSWORD=
 
+      - MQTT_SUBSCRIBE_TOPIC=voice-consume
+
       # Pocketbase Dashboard
       - POCKETBASE_PUBLISH_PROTOCOL=http
-      - POCKETBASE_PUBLISH_HOST=host.docker.internal
+      - POCKETBASE_PUBLISH_HOST=pocketbase
       - POCKETBASE_PUBLISH_PORT=8090
       - POCKETBASE_PUBLISH_PATH=/api/collections/dashboard/records
     depends_on:
@@ -95,13 +103,17 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
-      - NEXT_PUBLIC_API_DB=http://localhost:8090
+      # default env for frontend, if want to change it, please change it in .env file and build again
+      - NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1 # default api url for speech publisher
+      - NEXT_PUBLIC_API_DB=http://localhost:8090 # default api url for pocketbase
     ports:
       - 3000:3000
     networks:
-      - sst-network
+      - sst-network-frontend
 
 networks:
-  sst-network:
-    driver: bridge
+  sst-network-frontend:
+  sst-network-backend:
+
+volumes:
+  tempfile:

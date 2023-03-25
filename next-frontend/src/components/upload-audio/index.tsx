@@ -18,12 +18,15 @@ const UploadFileAudio: React.FC = () => {
   };
 
   const handleUpload = async (file: Blob) => {
-    const b64 = await blobToBase64(file);
+    const formData = new FormData();
+    formData.append('user_id', pb.authStore.model?.id as string);
+    formData.append('data', file);
 
     try {
-      await axios.post(`/speech-upload`, {
-        user_id: pb.authStore.model?.id,
-        data: b64,
+      await axios.post(`/speech-upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
       api.success({
         message: 'Upload Success',

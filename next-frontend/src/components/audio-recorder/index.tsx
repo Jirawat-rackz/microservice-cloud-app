@@ -81,12 +81,15 @@ const AudioRecorder = () => {
       const audioUrl = URL.createObjectURL(audioBlob);
       setAudio(audioUrl);
 
-      let b64 = await blobToBase64(audioBlob);
+      const formData = new FormData();
+      formData.append('user_id', pb.authStore.model?.id as string);
+      formData.append('data', audioBlob);
 
       try {
-        await axios.post(`/speech-upload`, {
-          user_id: pb.authStore.model?.id,
-          data: b64,
+        await axios.post(`/speech-upload`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         });
         api.success({
           message: 'Upload Success',

@@ -34,9 +34,9 @@ function DashboardPage() {
 
   const fetchData = React.useCallback(async () => {
     try {
-      const result = await pb
-        .collection('dashboard')
-        .getList(page, pageSize, { filter: `id='${pb.authStore.model?.id}'` });
+      const result = await pb.collection('dashboard').getList(page, pageSize, {
+        filter: `user_id='${pb.authStore.model?.id}'`,
+      });
       setDataSource(result.items);
     } catch (error: any) {
       api.error({
@@ -54,7 +54,7 @@ function DashboardPage() {
     fetchData();
 
     return () => {
-      pb.collection('example').unsubscribe();
+      pb.collection('dashboard').unsubscribe();
     };
   }, [fetchData]);
 

@@ -3,18 +3,15 @@ version: "3"
 services:
   stt-py:
     image: rackz/x-stack:speech-to-text-service-v1
-    platform: linux/amd64
     restart: always
     environment:
-      - STT_SCORER_PATH=./large_vocabulary.scorer
-      - STT_MODEL_PATH=./model.tflite
-      - MQTT_URL=emqx
+      - MQTT_URL=localhost
       - MQTT_PORT=1883
       - MQTT_TOPIC_SUB=voice-publish
       - MQTT_TOPIC_PUB=voice-consume
       - OPENAI_API_KEY=
     volumes:
-      - ./speech-to-text-service:/STT
+      - tempfile:/app/temp
     networks:
       - sst-network-backend
     depends_on:
@@ -40,7 +37,7 @@ services:
     image: rackz/x-stack:speech-publisher-v1
     restart: always
     environment:
-      - MQTT_HOST=emqx
+      - MQTT_HOST=localhost
       - MQTT_PORT=1883
       - USERNAME=
       - PASSWORD=
@@ -50,6 +47,8 @@ services:
       - MQTT_PUBLISH_TOPIC=voice-publish
     ports:
       - 8080:8080
+    volumes:
+      - tempfile:/app/temp
     networks:
       - sst-network-backend
     depends_on:
@@ -93,3 +92,7 @@ services:
 networks:
   sst-network-frontend:
   sst-network-backend:
+
+volumes:
+  tempfile:
+    external: true
