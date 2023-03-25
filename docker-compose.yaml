@@ -11,11 +11,10 @@ services:
       - MQTT_PORT=1883
       - MQTT_TOPIC_SUB=voice-publish
       - MQTT_TOPIC_PUB=voice-consume
-    entrypoint: ["/bin/bash", "start.sh"]
     volumes:
       - ./speech-to-text-service:/STT
     networks:
-        - sst-network
+      - sst-network
     depends_on:
       - emqx
 
@@ -25,7 +24,7 @@ services:
       - 1883:1883
       - 18083:18083
     networks:
-        - sst-network
+      - sst-network
 
   pocketbase:
     build:
@@ -36,7 +35,7 @@ services:
     ports:
       - 8090:8090
     networks:
-        - sst-network
+      - sst-network
 
   speech-publisher:
     build:
@@ -46,10 +45,22 @@ services:
         - APP_NAME=speechpublisher
         - APP_PORT=8080
     restart: always
+    environment:
+      - MQTT_HOST=emqx
+      - MQTT_PORT=1883
+      - USERNAME=
+      - PASSWORD=
+
+      # Gin server
+      - PORT=8080
+
+      # MQTT topics
+      - MQTT_PUBLISH_TOPIC=voice-publish
+
     ports:
       - 8080:8080
     networks:
-        - sst-network
+      - sst-network
     depends_on:
       - emqx
       - pocketbase
@@ -62,7 +73,18 @@ services:
         - APP_NAME=speechconsumer
     restart: always
     networks:
-        - sst-network
+      - sst-network
+    environment:
+      - MQTT_HOST=emqx
+      - MQTT_PORT=1883
+      - USERNAME=
+      - PASSWORD=
+
+      # Pocketbase Dashboard
+      - POCKETBASE_PUBLISH_PROTOCOL=http
+      - POCKETBASE_PUBLISH_HOST=host.docker.internal
+      - POCKETBASE_PUBLISH_PORT=8090
+      - POCKETBASE_PUBLISH_PATH=/api/collections/dashboard/records
     depends_on:
       - emqx
       - pocketbase
@@ -72,10 +94,13 @@ services:
       context: ./next-frontend
       dockerfile: Dockerfile
     restart: always
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
+      - NEXT_PUBLIC_API_DB=http://localhost:8090
     ports:
       - 3000:3000
     networks:
-        - sst-network
+      - sst-network
 
 networks:
   sst-network:

@@ -26,7 +26,6 @@ WORKDIR /app
 
 RUN export GIN_MODE=release
 COPY --from=builder /app/main ./main
-COPY --from=builder /app/.env.example ./.env.example
 RUN chmod +x main
 
 EXPOSE ${PORT}

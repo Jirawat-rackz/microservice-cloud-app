@@ -1,0 +1,113 @@
+name: CI Workflow microservice-cloud-app
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME_PREFIX: rackz
+
+jobs:
+  files-changed:
+    name: detect what files changed
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    # Map a step output to a job output
+    outputs:
+      publisher-message: ${{ steps.changes.outputs["publisher-message"] }}
+      consumer-message: ${{ steps.changes.outputs["consumer-message"] }}
+      next-frontend: ${{ steps.changes.outputs["next-frontend"] }}
+      pocketbase: ${{ steps.changes.outputs.pocketbase }}
+      speech-to-text-service: ${{ steps.changes.outputs["speech-to-text-service"] }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check for backend file changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          token: ${{ github.token }}
+          filters: .github/file-filters.yaml
+
+  build-next-frontend:
+    if: needs.files-changed.outputs["next-frontend"] == 'true'
+    needs: files-changed
+    uses: ./.github/workflows/docker-reusable-build.yaml
+    with:
+      image_name: ${{ env.IMAGE_NAME_PREFIX }}/next-frontend
+      file: ./next-frontend/Dockerfile
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+
+  build-speech-publisher:
+    if: needs.files-changed.outputs["publisher-message"] == 'true'
+    needs: files-changed
+    uses: ./.github/workflows/docker-reusable-build.yaml
+    with:
+      image_name: ${{ env.IMAGE_NAME_PREFIX }}/speech-publisher
+      file: ./go-speech-publisher/Dockerfile
+      build-arg: |
+        APP_NAME=speechpublisher
+        APP_PORT=8080
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - id: string
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ env.IMAGE_NAME }}
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Get Tag Image
+        id: tags
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: ./go-speech-publisher/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}-publisher-message:${{ steps.tags.outputs.sha_short }}
+          build-arg: |
+            APP_NAME=speechpublisher
+            APP_PORT=8080
+
+  build-speech-consumer:
+    if: needs.files-changed.outputs["publisher-message"] == 'true'
+    needs: files-changed
+    uses: ./.github/workflows/docker-reusable-build.yaml
+    with:
+      image_name: ${{ env.IMAGE_NAME_PREFIX }}/speech-consumer
+      file: ./go-speech-publisher/Dockerfile
+      build-arg: |
+        APP_NAME=speechconsumer
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+            
+  build-pocketbase:
+    if: needs.files-changed.outputs["pocketbase"] == 'true'
+    needs: files-changed
+    uses: ./.github/workflows/docker-reusable-build.yaml
+    with:
+      image_name: ${{ env.IMAGE_NAME_PREFIX }}/pocketbase
+      file: ./pocketbase/Dockerfile
+      build-arg: |
+        VERSION=0.13.4
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}

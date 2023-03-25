@@ -1,7 +1,6 @@
 import { ConfigProvider, App } from 'antd';
 import enUS from 'antd/locale/en_US';
 import { AuthProvider } from './auth.provider';
-import LayoutProvider from './layout.provider';
 
 export type ProviderProps = {
   children: React.ReactNode;

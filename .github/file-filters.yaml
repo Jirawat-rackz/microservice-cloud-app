@@ -1,0 +1,24 @@
+publisher-message: &publisher-message
+  - "go-speech-publisher/cmd/speechpublisher/*.go"
+  - "go-speech-publisher/environn/*.go"
+  - "go-speech-publisher/handler/**"
+  - "go-speech-publisher/pkg/**"
+  - "go-speech-publisher/go.mod"
+  - "go-speech-publisher/go.sum"
+  - "go-speech-publisher/Dockerfile"
+
+consumer-message: &consumer-message
+  - "go-speech-publisher/cmd/speechconsumer/*.go"
+  - "go-speech-publisher/environn/*.go"
+  - "go-speech-publisher/go.mod"
+  - "go-speech-publisher/go.sum"
+  - "go-speech-publisher/Dockerfile"
+
+next-frontend: &next-frontend
+  - "next-frontend/**"
+
+pocketbase: &pocketbase
+  - "pocketbase/**"
+
+speech-to-text-service: &speech-to-text-service
+  - "speech-to-text-service/**"

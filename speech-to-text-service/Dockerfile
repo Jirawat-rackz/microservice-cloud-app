@@ -182,4 +182,7 @@ WORKDIR /STT
 
 COPY main.py main.py
 COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
 COPY start.sh start.sh
+ENTRYPOINT ["/bin/bash", "start.sh"]
