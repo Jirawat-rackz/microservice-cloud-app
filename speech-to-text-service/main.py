@@ -1,12 +1,14 @@
 import json
 from stt import Model
 from scipy.io import wavfile
+
 import scipy.signal as sps
-import io
 import os
 from paho.mqtt import client as mqtt_client
 import numpy as np
 import base64
+import uuid
+from os.path import dirname, join as pjoin
 
 # FOR TESTING LOCAL ONLY
 # take environment variables from .env
@@ -30,15 +32,33 @@ if __name__ == "__main__":
     ds.enableExternalScorer(SCORER_PATH)
     desired_sample_rate = ds.sampleRate()
 
-    def run_stt(data):
-        byte_data = io.BytesIO(data)
-        sampling_rate, data = wavfile.read(byte_data)
+    def run_stt(base64_data):
+        # Decode the Base64 string
+        decoded_data = base64.b64decode(base64_data)
+        filename = uuid.uuid4().hex + "-temp.wav"
+        wav_fname = pjoin("./", filename)
+
+        # pad the binary data with zeros to make it a multiple of the size of a 16-bit integer
+        padded_data = decoded_data.ljust(
+            len(decoded_data) + len(decoded_data) % 2, b"\x00"
+        )
+
+        # convert the binary data to a numpy array
+        audio_array = np.frombuffer(padded_data, dtype=np.int16)
+
+        # write the numpy array to a WAV file
+        wavfile.write(wav_fname, 44100, audio_array)
+
+        # read the WAV file using the wavfile.read() function
+        sampling_rate, data = wavfile.read(wav_fname)
 
         # Resample data
         number_of_samples = round(
             len(data) * float(desired_sample_rate) / sampling_rate
         )
+
         data = sps.resample(data, number_of_samples).astype("int16")
+        os.remove(filename)
         return ds.stt(data)
 
     # init MQTT
@@ -49,15 +69,24 @@ if __name__ == "__main__":
             print("Failed to connect, return code %d\n", rc)
 
     def on_message(client, userdata, msg):
+
         """
         ----Subscribe msg model----
         user_id : string
         data:     string
         """
         decode = json.loads(msg.payload)
-        base_data = decode["data"].split(",")[1]
-        wav_data = base64.b64decode(base_data)
-        text = run_stt(wav_data)
+
+        print("Accept message: ", decode["user_id"])
+        base_data = decode["data"].split("data:audio/wav;base64,")[1]
+
+        # Read the .wav file
+        text = run_stt(base_data)
+
+        print("Transcript: ", text)
+
+        # Delete the .wav file
+        # os.remove(filename)
 
         """
         ----Publish msg model----
