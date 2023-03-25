@@ -1,8 +1,8 @@
-version: "3.9"
+version: "3"
 
 services:
   stt-py:
-    image: dockerhub.warayut.xyz/microservice-cloud-app-stt-py
+    image: rackz/x-stack:speech-to-text-service-v1
     restart: always
     environment:
       - STT_SCORER_PATH=./large_vocabulary.scorer
@@ -55,7 +55,7 @@ services:
       - pocketbase
 
   speech-comsumer:
-    image: rackz/x-stack:speech-comsumer-v1
+    image: rackz/x-stack:speech-consumer-v1
     restart: always
     networks:
       - sst-network-backend
