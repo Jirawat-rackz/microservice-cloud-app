@@ -1,2 +1,3 @@
 scipy
 paho.mqtt
+openai
