@@ -41,7 +41,6 @@ func sub(client mqtt.Client) {
 		}
 
 		fmt.Printf("Update status to pocketbase: %s", resp.Status)
-
 	})
 	token.Wait()
 	fmt.Printf("Subscribed to topic: %s", topic)
