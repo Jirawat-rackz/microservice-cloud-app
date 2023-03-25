@@ -15,11 +15,11 @@ jobs:
     timeout-minutes: 3
     # Map a step output to a job output
     outputs:
-      publisher-message: ${{ steps.changes.outputs["publisher-message"] }}
-      consumer-message: ${{ steps.changes.outputs["consumer-message"] }}
-      next-frontend: ${{ steps.changes.outputs["next-frontend"] }}
+      publisher-message: ${{ steps.changes.outputs.publisher-message }}
+      consumer-message: ${{ steps.changes.outputs.consumer-message }}
+      next-frontend: ${{ steps.changes.outputs.next-frontend }}
       pocketbase: ${{ steps.changes.outputs.pocketbase }}
-      speech-to-text-service: ${{ steps.changes.outputs["speech-to-text-service"] }}
+      speech-to-text-service: ${{ steps.changes.outputs.speech-to-text-service }}
     steps:
       - uses: actions/checkout@v3
 
