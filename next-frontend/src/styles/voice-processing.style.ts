@@ -16,12 +16,13 @@ export const Content = styled.div`
 `;
 
 export const Header1 = styled.h1`
-  font-size: 30px;
+  font-size: 80px;
 `;
 
 export const TextInput = styled(Input)`
   width: 60%;
   height: 40vh;
+  font-size: 30px;
   margin-bottom: 5%;
-  color: 'black'
+  color: 'black';
 `;

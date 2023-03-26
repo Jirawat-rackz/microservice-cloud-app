@@ -25,7 +25,7 @@ const LoginPage = () => {
     <Container>
       <Card style={{ width: 500 }}>
         <Typography.Title level={3} style={{ textAlign: 'center' }}>
-          X Stack
+          X-Stack
         </Typography.Title>
         <Form
           name="login-form"

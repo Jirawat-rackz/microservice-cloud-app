@@ -26,7 +26,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <React.Fragment>
       <Head>
-        <title>X Stack</title>
+        <title>X-Stack</title>
       </Head>
       <Providers>
         <Component {...pageProps} />

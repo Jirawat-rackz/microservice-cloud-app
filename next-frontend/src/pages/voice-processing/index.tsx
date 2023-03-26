@@ -33,7 +33,7 @@ const VoiceProcessingPage: React.FC = () => {
   return (
     <LayoutProvider>
       <Container>
-        <Header1>AI Recorder</Header1>
+        <Header1>X-Stack Speech to Text</Header1>
         <TextInput disabled value={text} />
         <Content>
           <AudioRecorder />
