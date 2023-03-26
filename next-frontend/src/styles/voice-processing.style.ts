@@ -23,4 +23,5 @@ export const TextInput = styled(Input)`
   width: 60%;
   height: 40vh;
   margin-bottom: 5%;
+  color: 'black'
 `;
