@@ -2,12 +2,10 @@ version: "3.9"
 
 services:
   stt-py:
-    build:
-      context: ./speech-to-text-service
-      dockerfile: Dockerfile
+    image: rackz/x-stack:speech-to-text-service-v1
     restart: always
     environment:
-      - MQTT_URL=emqx
+      - MQTT_URL=localhost
       - MQTT_PORT=1883
       - MQTT_TOPIC_SUB=voice-publish
       - MQTT_TOPIC_PUB=voice-consume
@@ -28,55 +26,37 @@ services:
       - sst-network-backend
 
   pocketbase:
-    build:
-      context: ./pocketbase
-      dockerfile: Dockerfile
-      args:
-        - VERSION=0.13.4
+    image: rackz/x-stack:pocketbase-v1
     ports:
       - 8090:8090
-    volumes:
-      - ./pocketbase/pb_data:/pb_data
     networks:
       - sst-network-backend
       - sst-network-frontend
 
   speech-publisher:
-    build:
-      context: ./go-speech-publisher
-      dockerfile: Dockerfile
-      args:
-        - APP_NAME=speechpublisher
-        - APP_PORT=8080
+    image: rackz/x-stack:speech-publisher-v1
     restart: always
     environment:
-      - MQTT_HOST=emqx
+      - MQTT_HOST=localhost
       - MQTT_PORT=1883
       - USERNAME=
       - PASSWORD=
-
       # Gin server
       - PORT=8080
-
       # MQTT topics
       - MQTT_PUBLISH_TOPIC=voice-publish
-
     ports:
       - 8080:8080
-    networks:
-      - sst-network-backend
     volumes:
       - tempfile:/app/temp
+    networks:
+      - sst-network-backend
     depends_on:
       - emqx
       - pocketbase
 
   speech-comsumer:
-    build:
-      context: ./go-speech-publisher
-      dockerfile: Dockerfile
-      args:
-        - APP_NAME=speechconsumer
+    image: rackz/x-stack:speech-consumer-v1
     restart: always
     networks:
       - sst-network-backend
@@ -98,9 +78,7 @@ services:
       - pocketbase
 
   frontend:
-    build:
-      context: ./next-frontend
-      dockerfile: Dockerfile
+    image: rackz/x-stack:next-frontend-v1
     restart: always
     environment:
       # default env for frontend, if want to change it, please change it in .env file and build again
@@ -117,3 +95,4 @@ networks:
 
 volumes:
   tempfile:
+    external: false

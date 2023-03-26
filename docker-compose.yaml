@@ -1,11 +1,13 @@
-version: "3"
+version: "3.9"
 
 services:
   stt-py:
-    image: rackz/x-stack:speech-to-text-service-v1
+    build:
+      context: ./speech-to-text-service
+      dockerfile: Dockerfile 
     restart: always
     environment:
-      - MQTT_URL=localhost
+      - MQTT_URL=emqx
       - MQTT_PORT=1883
       - MQTT_TOPIC_SUB=voice-publish
       - MQTT_TOPIC_PUB=voice-consume
@@ -16,6 +18,8 @@ services:
       - sst-network-backend
     depends_on:
       - emqx
+    links: 
+      - emqx
 
   emqx:
     image: emqx:5
@@ -23,21 +27,43 @@ services:
       - 1883:1883
       - 18083:18083
     networks:
+      - sst-network-frontend
       - sst-network-backend
+    depends_on:
+      - frontend
+      - pocketbase
+    links: 
+      - frontend
+      - pocketbase
 
   pocketbase:
-    image: rackz/x-stack:pocketbase-v1
+    build:
+      context: ./pocketbase
+      dockerfile: Dockerfile
+      args:
+        - VERSION=0.13.4
     ports:
       - 8090:8090
+    volumes:
+      - ./pocketbase/pb_data:/pb_data
     networks:
       - sst-network-backend
       - sst-network-frontend
+    depends_on:
+      - frontend
+    links: 
+      - frontend
 
   speech-publisher:
-    image: rackz/x-stack:speech-publisher-v1
+    build:
+      context: ./go-speech-publisher
+      dockerfile: Dockerfile
+      args:
+        - APP_NAME=speechpublisher
+        - APP_PORT=8080    
     restart: always
     environment:
-      - MQTT_HOST=localhost
+      - MQTT_HOST=emqx
       - MQTT_PORT=1883
       - USERNAME=
       - PASSWORD=
@@ -54,9 +80,17 @@ services:
     depends_on:
       - emqx
       - pocketbase
+    links: 
+      - emqx
+      - pocketbase
 
   speech-comsumer:
-    image: rackz/x-stack:speech-consumer-v1
+    build:
+      context: ./go-speech-publisher
+      dockerfile: Dockerfile
+      args:
+        - APP_NAME=speechconsumer
+        - APP_PORT=8080
     restart: always
     networks:
       - sst-network-backend
@@ -76,9 +110,14 @@ services:
     depends_on:
       - emqx
       - pocketbase
+    links: 
+      - emqx
+      - pocketbase
 
   frontend:
-    image: rackz/x-stack:next-frontend-v1
+    build:
+      context: ./next-frontend
+      dockerfile: Dockerfile
     restart: always
     environment:
       # default env for frontend, if want to change it, please change it in .env file and build again
@@ -95,4 +134,3 @@ networks:
 
 volumes:
   tempfile:
-    external: true
