@@ -2,12 +2,14 @@
 This project was created for EN814710 Cloud Applications and Networking. \
 One-Command Deployment. We provide a fast and easy deployment strategy.
 
-# Member
-Thanachai Kaewsaen 623040136-9 \
-Jirawat Kurakhan 623040224-2 \
-Warayut Poomiwatracanont 623040323-0 \
-Sukon Sahunalu 623040495-1 \
-Adison Wonglakhon 623040652-1
+# Members
+| Member                   | Student ID  |
+|--------------------------|-------------|
+| Thanachai Kaewsaen       | 623040136-9 |
+| Jirawat Kurakhan         | 623040224-2 |
+| Warayut Poomiwatracanont | 623040323-0 |
+| Sukon Sahunalu           | 623040495-1 |
+| Adison Wonglakhon        | 623040652-1 |
 
 # Topology
 
@@ -24,13 +26,17 @@ cd microservice-cloud-app
 vim docker-compose.yaml
 
 ---Output---
-environment:
-  - OPENAI_API_KEY=sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+version: "3.9"
+
+services:
+  stt-py:
+    environment:
+      - OPENAI_API_KEY=sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 # Run with Docker Compose
 
-Verify that Docker Compose is installed correctly by checking the version.
+Verify that Docker Compose is installed correctly by checking the version
 (https://github.com/docker/compose/releases)
 ```bash
 docker compose version
@@ -53,6 +59,19 @@ If your have any problem when docker build
 ```bash
 docker compose up --build
 ```
+
+Check your task or application
+```bash
+docker compose ps
+```
+
+ Tear down your application
+```bash
+docker compose down
+
+docker compose rm
+```
+
 ## Usage
 
 ### Front-End ([NextJS](https://nextjs.org/docs/getting-started))
