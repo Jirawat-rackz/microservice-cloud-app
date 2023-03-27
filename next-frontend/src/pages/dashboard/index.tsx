@@ -31,13 +31,16 @@ function DashboardPage() {
 
   const [page, setPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(10);
+  const [total, setTotal] = React.useState<number>(0);
 
   const fetchData = React.useCallback(async () => {
     try {
       const result = await pb.collection('dashboard').getList(page, pageSize, {
         filter: `user_id='${pb.authStore.model?.id}'`,
       });
+
       setDataSource(result.items);
+      setTotal(result.totalItems);
     } catch (error: any) {
       api.error({
         message: 'Error',
@@ -69,6 +72,8 @@ function DashboardPage() {
           dataSource={dataSource}
           pagination={{
             current: page,
+            pageSize: pageSize,
+            total: total,
             defaultPageSize: 10,
             showSizeChanger: true,
             pageSizeOptions: ['10', '20', '50', '100'],
