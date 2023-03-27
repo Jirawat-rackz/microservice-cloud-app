@@ -3,14 +3,30 @@ This project was created for EN814710 Cloud Applications and Networking. \
 One-Command Deployment. We provide a fast and easy deployment strategy.
 
 # Member
-นายธนชัย แก้วแสน 623040136-9 \
-นายจิราวัฒน์ กุระขันธ์ 623040224-2 \
-นายวรายุทธ ภูมิวัฒฑราคานนท์ 623040323-0 \
-นายศุกล สหุนาลุ 623040495-1 \
-นายอดิศร วงษ์ลคร 623040652-1
+Thanachai Kaewsaen 623040136-9 \
+Jirawat Kurakhan 623040224-2 \
+Warayut Poomiwatracanont 623040323-0 \
+Sukon Sahunalu 623040495-1 \
+Adison Wonglakhon 623040652-1
 
 # Topology
 
+
+
+
+# Setting up
+You need to go to https://platform.openai.com/ and get API secret key from there. \
+If you don't have one, please click at <b>Create new secret key</b> to get one. \
+API key might be in format like "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+```bash
+cd microservice-cloud-app
+vim docker-compose.yaml
+
+---Output---
+environment:
+  - OPENAI_API_KEY=sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
 
 # Run with Docker Compose
 
@@ -32,6 +48,30 @@ Windows
 ```powershell
 docker-compose up
 ```
+
+If your have any problem when docker build
+```bash
+docker compose up --build
+```
+## Usage
+
+### Front-End ([NextJS](https://nextjs.org/docs/getting-started))
+http://localhost:3000
+| Username | Password   | 
+|----------|------------|
+| admin    | 1234567890 |
+
+### Back-End ([Pocketbase](https://pocketbase.io/))
+http://localhost:8090/_/
+| Username         | Password   | 
+|------------------|------------|
+| admin@xstack.com | 1234567890 |
+
+### MQTT ([EMQX Dashboard](https://www.emqx.io/))
+http://localhost:18083
+| Username | Password |
+|----------|----------|
+| admin    | public   |
 
 # Run with Docker Swarm
 ## Install Multipass on Linux
