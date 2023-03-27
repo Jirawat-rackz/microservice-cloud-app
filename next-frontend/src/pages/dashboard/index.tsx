@@ -37,6 +37,7 @@ function DashboardPage() {
     try {
       const result = await pb.collection('dashboard').getList(page, pageSize, {
         filter: `user_id='${pb.authStore.model?.id}'`,
+        sort: 'created',
       });
 
       setDataSource(result.items);
