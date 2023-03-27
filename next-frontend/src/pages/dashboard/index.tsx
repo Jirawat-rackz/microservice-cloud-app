@@ -68,6 +68,7 @@ function DashboardPage() {
           columns={columns}
           dataSource={dataSource}
           pagination={{
+            current: page,
             defaultPageSize: 10,
             showSizeChanger: true,
             pageSizeOptions: ['10', '20', '50', '100'],
