@@ -19,21 +19,21 @@ One-Command Deployment. We provide a fast and easy deployment strategy.
 
 # Setting up
 
+**Note that!: The OpenAI API is no longer free to use. Please consider using an alternative free API.**
+
 You need to go to https://platform.openai.com/ and get API secret key from there. \
 If you don't have one, please click at <b>Create new secret key</b> to get one. \
 API key might be in format like "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 ```bash
 cd microservice-cloud-app
-vim docker-compose.yaml
+cp .env.example .env && vim .env
 
 ---Output---
-version: "3.9"
+// ...
 
-services:
-  stt-py:
-    environment:
-      - OPENAI_API_KEY=sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+OPENAI_API_KEY=sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  // ...
 ```
 
 # Run with Docker Compose
@@ -45,7 +45,7 @@ Verify that Docker Compose is installed correctly by checking the version
 docker compose version
 
 ---Output---
-Docker Compose version v2.15.1
+Docker Compose version v2.23.3-desktop.2
 ```
 
 Linux
@@ -76,8 +76,6 @@ Tear down your application
 
 ```bash
 docker compose down
-
-docker compose rm
 ```
 
 ## Usage
