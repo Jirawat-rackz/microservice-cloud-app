@@ -2,8 +2,7 @@ import json
 from scipy.io import wavfile
 import os
 from paho.mqtt import client as mqtt_client
-import openai
-
+from openai import OpenAI
 
 # FOR TESTING LOCAL ONLY
 # take environment variables from .env
@@ -12,7 +11,7 @@ import openai
 
 if __name__ == "__main__":
 
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+    openAI_client = OpenAI(api_key=os.environ['OPENAI_API_KEY'],)
 
     # MQTT ENV
     MQTT_URL = os.environ.get("MQTT_URL")
@@ -23,7 +22,7 @@ if __name__ == "__main__":
     def run_stt(filename):
         filename = "./temp/" + filename
         audio_file = open(filename, "rb")
-        transcript = openai.Audio.transcribe("whisper-1", audio_file)
+        transcript = openAI_client.audio.transcriptions.create(model="whisper-1", file=audio_file)
         audio_file.close()
 
         # remove temp file
