@@ -2,46 +2,93 @@ import React, { useEffect } from 'react';
 import { notification, Table } from 'antd';
 import LayoutProvider from '@/providers/layout.provider';
 import { pb } from '../_app';
-import { TDashboard } from '@/models/dashboard.model';
-import { Record } from 'pocketbase';
+import { JoinedDataItem } from '@/models/dashboard.model';
+import { Container, SearchInput } from '@/styles/dashboard.style';
 
 const columns = [
   {
-    title: 'Word',
-    dataIndex: 'word',
-    key: 'word',
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    width: '300',
   },
   {
-    title: 'Create at',
-    dataIndex: 'created',
-    key: 'created',
-    render: (_: any, { created }: any) => {
+    title: 'Date',
+    dataIndex: 'date',
+    key: 'date',
+    width: '200',
+    render: (_: any, { date }: any) => {
       return (
-        new Date(created).toLocaleDateString() +
+        new Date(date).toLocaleDateString() +
         ' ' +
-        new Date(created).toLocaleTimeString()
+        new Date(date).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
       );
     },
+  },
+  {
+    title: 'SPH(R)',
+    dataIndex: 'sph_r',
+    key: 'sph_r',
+  },
+  {
+    title: 'SPH (L)',
+    dataIndex: 'sph_l',
+    key: 'sph_l',
+  },
+  {
+    title: 'CYL (R)',
+    dataIndex: 'cyl_r',
+    key: 'cyl_r',
+  },
+  {
+    title: 'CYL (L)',
+    dataIndex: 'cyl_l',
+    key: 'cyl_l',
+  },
+  {
+    title: 'AX (R)',
+    dataIndex: 'ax_r',
+    key: 'ax_r',
+  },
+  {
+    title: 'AX (L)',
+    dataIndex: 'ax_l',
+    key: 'ax_l',
   },
 ];
 
 function DashboardPage() {
   const [api, contextHolder] = notification.useNotification();
-  const [dataSource, setDataSource] = React.useState<Record[]>([]);
+  const [dataSource, setDataSource] = React.useState<JoinedDataItem[]>([]);
 
   const [page, setPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(10);
   const [total, setTotal] = React.useState<number>(0);
 
+  const [search, setSearch] = React.useState<string>('');
+
   const fetchData = React.useCallback(async () => {
     try {
-      const result = await pb.collection('dashboard').getList(page, pageSize, {
-        filter: `user_id='${pb.authStore.model?.id}'`,
-        sort: '-created',
+      const dashboardResult = await pb
+        .collection('dashboard')
+        .getList(page, pageSize);
+      const patientResult = await pb.collection('patient').getList();
+
+      const joinedData = dashboardResult.items.map((dashboardItem) => {
+        const matchingPatient = patientResult.items.find(
+          (patient) => patient.id === dashboardItem.patient_id
+        );
+        return {
+          name: matchingPatient ? matchingPatient.name : null,
+          ...dashboardItem,
+        };
       });
 
-      setDataSource(result.items);
-      setTotal(result.totalItems);
+      setDataSource(joinedData);
+      setTotal(dashboardResult.totalItems);
     } catch (error: any) {
       api.error({
         message: 'Error',
@@ -58,19 +105,34 @@ function DashboardPage() {
     fetchData();
 
     return () => {
-      pb.collection('dashboard').unsubscribe();
+      pb.collection('words').unsubscribe();
     };
   }, [fetchData]);
 
+  const handleSearch = (value: string) => {
+    setSearch(value);
+  };
+
+  const filteredDataSource = dataSource.filter((item) =>
+    item.name.toLowerCase().includes(search.toLowerCase())
+  );
   return (
     <LayoutProvider>
       {contextHolder}
-      <div>
+      <Container>
         <h1>Dashboard</h1>
+        <SearchInput
+          placeholder="search by name"
+          onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleSearch(e.target.value)
+          }
+          enterButton
+        />
         <Table
           rowKey={(record) => record.id}
           columns={columns}
-          dataSource={dataSource}
+          dataSource={filteredDataSource}
+          scroll={{ x: 1000 }}
           pagination={{
             current: page,
             pageSize: pageSize,
@@ -88,7 +150,7 @@ function DashboardPage() {
             },
           }}
         />
-      </div>
+      </Container>
     </LayoutProvider>
   );
 }

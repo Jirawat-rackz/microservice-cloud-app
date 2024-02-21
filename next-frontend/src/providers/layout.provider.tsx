@@ -67,7 +67,8 @@ const LayoutProvider: React.FC<ProviderProps> = ({ children }) => {
         <AntLayout>
           <Content theme={colorBgContainer}>{children}</Content>
           <AntLayout.Footer style={{ textAlign: 'center' }}>
-            Cloud Applications and Networking © 2023 X-Stack. All Rights Reserved.
+            Cloud Applications and Networking © 2024 X-Stack. All Rights
+            Reserved.
           </AntLayout.Footer>
         </AntLayout>
       </AntLayout>
