@@ -1,9 +1,9 @@
 import React, { ReactElement } from 'react';
 import type { GetServerSidePropsContext, NextPage } from 'next';
-import { Card, Form, Input, Typography } from 'antd';
-
+import { Card, Form, Input, Typography, Button } from 'antd';
 import { Container, SubmitButton } from '@/styles/login.style';
-import { useAuth } from '@/providers/auth.provider';
+import { useAuth } from '@/providers/auth.provider'
+import { useRouter } from 'next/router';
 
 type IFormLoginProps = {
   username: string;
@@ -13,6 +13,11 @@ type IFormLoginProps = {
 const LoginPage = () => {
   const [form] = Form.useForm<IFormLoginProps>();
   const { login } = useAuth();
+  const router = useRouter();
+
+  const handleCreateClick = () => {
+    router.push('/sign-up');
+  }
 
   const onFinish = React.useCallback(
     async (values: IFormLoginProps) => {
@@ -53,6 +58,10 @@ const LoginPage = () => {
           <Form.Item>
             <SubmitButton htmlType="submit">Log in</SubmitButton>
           </Form.Item>
+
+          <Typography style={{ textAlign: 'center', fontSize: "14px" }}>
+            Don&apos;t have an account? <Typography.Link onClick={handleCreateClick} style={{ color: 'blue' }}>Create</Typography.Link>
+          </Typography>
         </Form>
       </Card>
     </Container>
