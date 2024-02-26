@@ -4,6 +4,7 @@ import LayoutProvider from '@/providers/layout.provider';
 import { pb } from '../_app';
 import { JoinedDataItem } from '@/models/dashboard.model';
 import { Container, SearchInput } from '@/styles/dashboard.style';
+import { Record } from 'pocketbase';
 
 const columns = [
   {
@@ -14,14 +15,14 @@ const columns = [
   },
   {
     title: 'Date',
-    dataIndex: 'date',
-    key: 'date',
+    dataIndex: 'created',
+    key: 'created',
     width: '200',
-    render: (_: any, { date }: any) => {
+    render: (_: any, { created }: any) => {
       return (
-        new Date(date).toLocaleDateString() +
+        new Date(created).toLocaleDateString() +
         ' ' +
-        new Date(date).toLocaleTimeString('en-US', {
+        new Date(created).toLocaleTimeString('en-US', {
           hour: '2-digit',
           minute: '2-digit',
         })
@@ -29,7 +30,7 @@ const columns = [
     },
   },
   {
-    title: 'SPH(R)',
+    title: 'SPH (R)',
     dataIndex: 'sph_r',
     key: 'sph_r',
   },
@@ -62,7 +63,7 @@ const columns = [
 
 function DashboardPage() {
   const [api, contextHolder] = notification.useNotification();
-  const [dataSource, setDataSource] = React.useState<JoinedDataItem[]>([]);
+  const [dataSource, setDataSource] = React.useState<Record[]>([]);
 
   const [page, setPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(10);
@@ -72,23 +73,14 @@ function DashboardPage() {
 
   const fetchData = React.useCallback(async () => {
     try {
-      const dashboardResult = await pb
-        .collection('dashboard')
-        .getList(page, pageSize);
-      const patientResult = await pb.collection('patient').getList();
+      const result = await pb
+        .collection('history_view')
+        .getList(page, pageSize, {
+          filter: `clinic_id='${pb.authStore.model?.clinic_id}'`,
+        });
 
-      const joinedData = dashboardResult.items.map((dashboardItem) => {
-        const matchingPatient = patientResult.items.find(
-          (patient) => patient.id === dashboardItem.patient_id
-        );
-        return {
-          name: matchingPatient ? matchingPatient.name : null,
-          ...dashboardItem,
-        };
-      });
-
-      setDataSource(joinedData);
-      setTotal(dashboardResult.totalItems);
+      setDataSource(result.items);
+      setTotal(result.totalItems);
     } catch (error: any) {
       api.error({
         message: 'Error',
