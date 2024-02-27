@@ -43,8 +43,7 @@ func main() {
 
 	v1.POST("/speech-upload", speechHandler.SpeechPublisher)
 
-	// port := fmt.Sprintf(":%s", os.Getenv("PORT"))
-	port := fmt.Sprintf(":%s", "8080")
+	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
 
 	srv := &http.Server{
 		Addr:    port,

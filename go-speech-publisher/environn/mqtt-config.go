@@ -2,7 +2,7 @@ package environn
 
 import (
 	"fmt"
-	// "os"
+	"os"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/google/uuid"
@@ -17,10 +17,8 @@ var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err
 }
 
 func MQTTOption() *mqtt.ClientOptions {
-	// mqtt_host := os.Getenv("MQTT_HOST")
-	// mqtt_port := os.Getenv("MQTT_PORT")
-	mqtt_host := "localhost"
-	mqtt_port := "1883"
+	mqtt_host := os.Getenv("MQTT_HOST")
+	mqtt_port := os.Getenv("MQTT_PORT")
 	options := mqtt.NewClientOptions()
 	options.AddBroker(fmt.Sprintf("mqtt://%s:%s", mqtt_host, mqtt_port))
 	options.SetClientID(uuid.New().String())

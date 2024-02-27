@@ -28,8 +28,7 @@ func main() {
 
 func sub(client mqtt.Client) {
 	apiPath := environn.PBApi()
-	// topic := os.Getenv("MQTT_SUBSCRIBE_TOPIC")
-	topic := "voice-consume"
+	topic := os.Getenv("MQTT_SUBSCRIBE_TOPIC")
 	token := client.Subscribe(topic, 1, func(client mqtt.Client, msg mqtt.Message) {
 		payload := string(msg.Payload())
 		fmt.Printf("Received message: %s from topic: %s", payload, msg.Topic())
