@@ -37,7 +37,8 @@ func (handler SpeechPublisherHandler) SpeechPublisher(c *gin.Context) {
 
 	newFilename := uuid.New().String() + ".wav"
 
-	c.SaveUploadedFile(file, "./temp/"+newFilename)
+	// c.SaveUploadedFile(file, "./temp/"+newFilename)
+	c.SaveUploadedFile(file, "../../../speech-to-text-service/temp/"+newFilename)
 
 	userId := c.Request.FormValue("user_id")
 
