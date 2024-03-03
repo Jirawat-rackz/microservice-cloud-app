@@ -5,36 +5,18 @@ One-Command Deployment. We provide a fast and easy deployment strategy.
 
 # Members
 
-| Member                   | Student ID  |
-| ------------------------ | ----------- |
-| Thanachai Kaewsaen       | 623040136-9 |
-| Jirawat Kurakhan         | 623040224-2 |
-| Warayut Poomiwatracanont | 623040323-0 |
-| Sukon Sahunalu           | 623040495-1 |
-| Adison Wonglakhon        | 623040652-1 |
+| Member                | Student ID  |
+| --------------------- | ----------- |
+| Kamonwan Polrad       | 633040144-1 |
+| Thachchaphan Yodsanga | 633040161-1 |
+| Phakaphat Thongbu     | 633040420-3 |
+| Sasithon Konthong     | 633040717-0 |
 
 # Software Architecture
 
-![Software Architecture](./docs/software-architecture.png)
+![Software Architecture](./docs/software-architecture.jpg)
 
 # Setting up
-
-**Note that!: The OpenAI API is no longer free to use. Please consider using an alternative free API.**
-
-You need to go to https://platform.openai.com/ and get API secret key from there. \
-If you don't have one, please click at <b>Create new secret key</b> to get one. \
-API key might be in format like "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-
-```bash
-cd microservice-cloud-app
-cp .env.example .env && vim .env
-
----Output---
-// ...
-
-OPENAI_API_KEY=sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  // ...
-```
 
 # Run with Docker Compose
 
