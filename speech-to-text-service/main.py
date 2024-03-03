@@ -45,7 +45,6 @@ def run_stt(filename):
     os.remove(filename)
     return text
 
-# init MQTT
 def on_connect(client, userdata, flags, rc):
     client.subscribe(MQTT_TOPIC_SUB)
     print(f"Connected with result code " + str(rc))
